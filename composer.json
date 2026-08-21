@@ -1,0 +1,50 @@
+{
+  "name": "evolution-cms/a-social-auth",
+  "description": "Social and password authentication for Evolution CMS: every HybridAuth provider, multi-provider account linking, and e-mail/password login, registration and recovery in one configurable widget.",
+  "type": "evolutioncms-plugin",
+  "keywords": [
+    "evo",
+    "evocms",
+    "evolution",
+    "evolution-cms",
+    "social",
+    "oauth",
+    "hybridauth",
+    "login",
+    "registration",
+    "google",
+    "facebook",
+    "linkedin",
+    "telegram"
+  ],
+  "require": {
+    "php": "^8.3",
+    "evolution-cms/evolution": "^3.5.2",
+    "hybridauth/hybridauth": "dev-master"
+  },
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "EvolutionCMS\\aSocialAuth\\": "src/"
+    }
+  },
+  "scripts": {
+    "test": "pest --no-coverage",
+    "test:coverage": "pest --coverage"
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "EvolutionCMS\\aSocialAuth\\aSocialAuthServiceProvider"
+      ]
+    }
+  },
+  "require-dev": {
+    "pestphp/pest": "^3.0"
+  },
+  "config": {
+    "allow-plugins": {
+      "pestphp/pest-plugin": true
+    }
+  }
+}
