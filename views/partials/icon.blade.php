@@ -37,4 +37,5 @@
 
     $key  = strtolower((string) ($icon ?? ''));
     $glyph = $icons[$key] ?? '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a5 5 0 015 5v3h1a2 2 0 012 2v8a2 2 0 01-2 2H6a2 2 0 01-2-2v-8a2 2 0 012-2h1V7a5 5 0 015-5zm0 2a3 3 0 00-3 3v3h6V7a3 3 0 00-3-3zm0 10a1.75 1.75 0 100 3.5A1.75 1.75 0 0012 14z"/></svg>';
-@endphp{!! $glyph !!}
+@endphp
+{!! $glyph !!}

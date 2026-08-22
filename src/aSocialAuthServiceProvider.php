@@ -20,6 +20,7 @@ class aSocialAuthServiceProvider extends ServiceProvider
 
         $this->loadMigrationsFrom(dirname(__DIR__) . '/database/migrations');
         $this->loadTranslationsFrom(dirname(__DIR__) . '/lang', 'aSocialAuth');
+        $this->ensureTranslationFallback();
         $this->loadViewsFrom(dirname(__DIR__) . '/views', 'aSocialAuth');
 
         $this->registerSnippets();
@@ -28,6 +29,36 @@ class aSocialAuthServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->publishResources();
         }
+    }
+
+    /**
+     * Give the translator a fallback locale when the CMS has not.
+     *
+     * Evolution's container answers null to getFallbackLocale(), so Laravel's
+     * translator boots without one: under a manager language we ship no file
+     * for, every line would render as its own key ("aSocialAuth::login.sign_in")
+     * instead of falling back to English. Only filled in when nothing else has
+     * set it, and a fallback can only supply lines the active locale lacks.
+     */
+    protected function ensureTranslationFallback(): void
+    {
+        try {
+            $translator = $this->app['translator'];
+        } catch (\Throwable $e) {
+            return;
+        }
+
+        if (!method_exists($translator, 'getFallback') || !method_exists($translator, 'setFallback')) {
+            return;
+        }
+
+        if ((string) $translator->getFallback() !== '') {
+            return;
+        }
+
+        $fallback = trim((string) config('app.fallback_locale', 'en'));
+
+        $translator->setFallback($fallback !== '' ? $fallback : 'en');
     }
 
     /**

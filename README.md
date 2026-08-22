@@ -48,6 +48,10 @@ php artisan vendor:publish --tag=asocialauth-views
 php artisan vendor:publish --tag=asocialauth-lang
 ```
 
+### Languages
+
+Every manager language Evolution CMS ships with is translated: `az be bg cs da de en es fa fi fr he it ja nl nn/no pl pt sv uk zh`. The active manager language is used automatically; anything else falls back to English.
+
 ---
 
 ## The widget

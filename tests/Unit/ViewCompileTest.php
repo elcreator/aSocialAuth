@@ -70,3 +70,13 @@ it('references only partials that exist', function (string $view) {
 
     expect($missing)->toBe([], "{$view} includes partials that do not exist");
 })->with('views');
+
+it('leaves no raw-block placeholder in its compiled output', function (string $view) {
+    // Blade parks an @php block behind "@__raw_block_N__@" while it compiles and
+    // swaps it back afterwards. Anything glued straight onto @endphp eats the
+    // closing "@" -- the marker then survives into the page, as does whatever
+    // followed it. A newline after @endphp is all it takes to avoid.
+    $compiled = compileView($view);
+
+    expect($compiled)->not->toContain('@__raw_block_');
+})->with('views');
