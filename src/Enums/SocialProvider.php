@@ -49,6 +49,7 @@ enum SocialProvider: string
     case MASTODON = 'mastodon';
     case MEDIUM = 'medium';
     case MICROSOFTGRAPH = 'microsoftgraph';
+    case OKTAOIDC = 'oktaoidc';
     case OPENID = 'openid';
     case ORCID = 'orcid';
     case PATREON = 'patreon';
@@ -108,6 +109,7 @@ enum SocialProvider: string
             self::MASTODON => 'Mastodon',
             self::MEDIUM => 'Medium',
             self::MICROSOFTGRAPH => 'MicrosoftGraph',
+            self::OKTAOIDC => 'OktaOIDC',
             self::OPENID => 'OpenID',
             self::ORCID => 'ORCID',
             self::PATREON => 'Patreon',
@@ -177,6 +179,7 @@ enum SocialProvider: string
             self::MASTODON => 'Mastodon',
             self::MEDIUM => 'Medium',
             self::MICROSOFTGRAPH => 'Microsoft',
+            self::OKTAOIDC => 'Okta',
             self::OPENID => 'OpenID',
             self::ORCID => 'ORCID',
             self::PATREON => 'Patreon',

@@ -360,5 +360,8 @@ it('degrades quietly when the claims table is unreachable', function () {
 
     expect(EmailVerifier::pendingFor(1))->toBeNull();
 
-    EmailVerifier::cancel(1);
-})->throwsNoExceptions();
+    // Asserted rather than left to `throwsNoExceptions()`. That helper declares
+    // a test performs no assertions at all, which contradicts the expectation
+    // above - and the contradiction is what made this test report as risky.
+    expect(fn () => EmailVerifier::cancel(1))->not->toThrow(Throwable::class);
+});
