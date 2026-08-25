@@ -1,9 +1,9 @@
 <?php
 
-namespace EvolutionCMS\aSocialAuth\Support;
+namespace Elcreator\aSocialAuth\Support;
 
-use EvolutionCMS\aSocialAuth\Models\RegisteredProvider;
-use EvolutionCMS\aSocialAuth\Models\SocialAccount;
+use Elcreator\aSocialAuth\Models\RegisteredProvider;
+use Elcreator\aSocialAuth\Models\SocialAccount;
 use Illuminate\Support\Collection;
 
 /**

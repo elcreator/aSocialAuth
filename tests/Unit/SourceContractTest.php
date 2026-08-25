@@ -1,6 +1,6 @@
 <?php
 
-use EvolutionCMS\aSocialAuth\Support\Config;
+use Elcreator\aSocialAuth\Support\Config;
 
 /**
  * Source-level invariants — the kind that survive refactoring only if something

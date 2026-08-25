@@ -1,11 +1,11 @@
 <?php
 
-namespace EvolutionCMS\aSocialAuth\Http\Controllers;
+namespace Elcreator\aSocialAuth\Http\Controllers;
 
-use EvolutionCMS\aSocialAuth\Support\Config;
-use EvolutionCMS\aSocialAuth\Support\FlowState;
-use EvolutionCMS\aSocialAuth\Support\HybridAuthManager;
-use EvolutionCMS\aSocialAuth\Support\Log;
+use Elcreator\aSocialAuth\Support\Config;
+use Elcreator\aSocialAuth\Support\FlowState;
+use Elcreator\aSocialAuth\Support\HybridAuthManager;
+use Elcreator\aSocialAuth\Support\Log;
 use Illuminate\Http\Request;
 
 /**

@@ -1,6 +1,6 @@
 @php
-    use EvolutionCMS\aSocialAuth\Support\Config;
-    use EvolutionCMS\aSocialAuth\Support\UserResolver;
+    use Elcreator\aSocialAuth\Support\Config;
+    use Elcreator\aSocialAuth\Support\UserResolver;
 
     /**
      * The linked-accounts widget.

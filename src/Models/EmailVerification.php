@@ -1,6 +1,6 @@
 <?php
 
-namespace EvolutionCMS\aSocialAuth\Models;
+namespace Elcreator\aSocialAuth\Models;
 
 use Illuminate\Database\Eloquent\Model;
 

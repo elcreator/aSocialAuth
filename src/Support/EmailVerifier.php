@@ -1,9 +1,9 @@
 <?php
 
-namespace EvolutionCMS\aSocialAuth\Support;
+namespace Elcreator\aSocialAuth\Support;
 
-use EvolutionCMS\aSocialAuth\Exceptions\SocialAuthException;
-use EvolutionCMS\aSocialAuth\Models\EmailVerification;
+use Elcreator\aSocialAuth\Exceptions\SocialAuthException;
+use Elcreator\aSocialAuth\Models\EmailVerification;
 
 /**
  * Adding and proving an e-mail address after the fact.

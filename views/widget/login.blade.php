@@ -1,5 +1,5 @@
 @php
-    use EvolutionCMS\aSocialAuth\Support\Config;
+    use Elcreator\aSocialAuth\Support\Config;
 
     /**
      * The front-end sign-in widget.

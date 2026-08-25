@@ -1,8 +1,8 @@
 <?php
 
-namespace EvolutionCMS\aSocialAuth\Models;
+namespace Elcreator\aSocialAuth\Models;
 
-use EvolutionCMS\aSocialAuth\Enums\SocialProvider;
+use Elcreator\aSocialAuth\Enums\SocialProvider;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;

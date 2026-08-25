@@ -25,7 +25,7 @@ Authentication for [Evolution CMS](https://github.com/evolution-cms/evolution) 3
 ## Installation
 
 ```bash
-composer require evolution-cms/a-social-auth
+composer require elcreator/asocialauth
 php artisan migrate
 ```
 
@@ -145,7 +145,7 @@ Evolution CMS 3.x keeps manager users and web users in one `users` table, separa
 
 ### Providers
 
-The five scaffolded in the config are only a starting point. Any of the 52 slugs in `EvolutionCMS\aSocialAuth\Enums\SocialProvider` works:
+The five scaffolded in the config are only a starting point. Any of the 52 slugs in `Elcreator\aSocialAuth\Enums\SocialProvider` works:
 
 ```php
 'providers' => [
@@ -243,7 +243,7 @@ Yes, an administrator can — it is ordinary core behaviour. Open the user under
 Two things worth knowing:
 
 - Social accounts are created with **role 0** — "no user role", a web user with no manager access at all. Any other default would hand manager standing to whoever completes an OAuth flow.
-- **A manager needs a real e-mail address.** Password recovery is the way back into a manager account and it works by e-mail; an account holding a `@social.invalid` placeholder has no route back if its provider is lost. Ask the owner to add a real address first — `EvolutionCMS\aSocialAuth\Support\Promotion::canBecomeManager($userId)` answers this, and a warning is written to the event log if a role is granted anyway.
+- **A manager needs a real e-mail address.** Password recovery is the way back into a manager account and it works by e-mail; an account holding a `@social.invalid` placeholder has no route back if its provider is lost. Ask the owner to add a real address first — `Elcreator\aSocialAuth\Support\Promotion::canBecomeManager($userId)` answers this, and a warning is written to the event log if a role is granted anyway.
 
 ---
 

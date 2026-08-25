@@ -1,7 +1,7 @@
 <?php
 
-use EvolutionCMS\aSocialAuth\Models\RegisteredProvider;
-use EvolutionCMS\aSocialAuth\Models\SocialAccount;
+use Elcreator\aSocialAuth\Models\RegisteredProvider;
+use Elcreator\aSocialAuth\Models\SocialAccount;
 
 /**
  * The data model: a provider is a row, an identity is a row, and neither is a
@@ -59,7 +59,7 @@ it('adds a network without adding a column', function () {
 it('resolves a registry row back to its catalogue entry', function () {
     $provider = makeProvider('google');
 
-    expect($provider->catalogue())->toBe(\EvolutionCMS\aSocialAuth\Enums\SocialProvider::GOOGLE);
+    expect($provider->catalogue())->toBe(\Elcreator\aSocialAuth\Enums\SocialProvider::GOOGLE);
     expect($provider->adapterClass())->toBe('Hybridauth\\Provider\\Google');
     
 });

@@ -1,11 +1,11 @@
 <?php
 
-namespace EvolutionCMS\aSocialAuth\Http\Controllers;
+namespace Elcreator\aSocialAuth\Http\Controllers;
 
-use EvolutionCMS\aSocialAuth\Models\RegisteredProvider;
-use EvolutionCMS\aSocialAuth\Support\Config;
-use EvolutionCMS\aSocialAuth\Support\FlowState;
-use EvolutionCMS\aSocialAuth\Support\ProviderRegistry;
+use Elcreator\aSocialAuth\Models\RegisteredProvider;
+use Elcreator\aSocialAuth\Support\Config;
+use Elcreator\aSocialAuth\Support\FlowState;
+use Elcreator\aSocialAuth\Support\ProviderRegistry;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 

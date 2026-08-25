@@ -1,6 +1,6 @@
 <?php
 
-use EvolutionCMS\aSocialAuth\Support\Config;
+use Elcreator\aSocialAuth\Support\Config;
 
 /**
  * The routes have to be genuinely configurable: changing the prefix must move

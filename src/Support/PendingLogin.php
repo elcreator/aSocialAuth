@@ -1,6 +1,6 @@
 <?php
 
-namespace EvolutionCMS\aSocialAuth\Support;
+namespace Elcreator\aSocialAuth\Support;
 
 /**
  * A sign-in that got as far as proving who the visitor is, then stopped.

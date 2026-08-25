@@ -1,10 +1,10 @@
 <?php
 
-namespace EvolutionCMS\aSocialAuth;
+namespace Elcreator\aSocialAuth;
 
-use EvolutionCMS\aSocialAuth\Support\Config;
-use EvolutionCMS\aSocialAuth\Support\Log;
-use EvolutionCMS\aSocialAuth\Support\Renderer;
+use Elcreator\aSocialAuth\Support\Config;
+use Elcreator\aSocialAuth\Support\Log;
+use Elcreator\aSocialAuth\Support\Renderer;
 use EvolutionCMS\ServiceProvider;
 
 class aSocialAuthServiceProvider extends ServiceProvider

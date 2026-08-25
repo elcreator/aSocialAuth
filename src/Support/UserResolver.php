@@ -1,10 +1,10 @@
 <?php
 
-namespace EvolutionCMS\aSocialAuth\Support;
+namespace Elcreator\aSocialAuth\Support;
 
-use EvolutionCMS\aSocialAuth\Exceptions\SocialAuthException;
-use EvolutionCMS\aSocialAuth\Models\RegisteredProvider;
-use EvolutionCMS\aSocialAuth\Models\SocialAccount;
+use Elcreator\aSocialAuth\Exceptions\SocialAuthException;
+use Elcreator\aSocialAuth\Models\RegisteredProvider;
+use Elcreator\aSocialAuth\Models\SocialAccount;
 use Hybridauth\User\Profile;
 
 /**

@@ -1,14 +1,14 @@
 <?php
 
-namespace EvolutionCMS\aSocialAuth\Http\Controllers;
+namespace Elcreator\aSocialAuth\Http\Controllers;
 
-use EvolutionCMS\aSocialAuth\Models\SocialAccount;
-use EvolutionCMS\aSocialAuth\Support\Config;
-use EvolutionCMS\aSocialAuth\Support\FlowState;
-use EvolutionCMS\aSocialAuth\Support\HybridAuthManager;
-use EvolutionCMS\aSocialAuth\Support\Identity;
-use EvolutionCMS\aSocialAuth\Support\Log;
-use EvolutionCMS\aSocialAuth\Support\ProviderRegistry;
+use Elcreator\aSocialAuth\Models\SocialAccount;
+use Elcreator\aSocialAuth\Support\Config;
+use Elcreator\aSocialAuth\Support\FlowState;
+use Elcreator\aSocialAuth\Support\HybridAuthManager;
+use Elcreator\aSocialAuth\Support\Identity;
+use Elcreator\aSocialAuth\Support\Log;
+use Elcreator\aSocialAuth\Support\ProviderRegistry;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 

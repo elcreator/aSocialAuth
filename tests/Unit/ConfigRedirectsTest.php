@@ -1,6 +1,6 @@
 <?php
 
-use EvolutionCMS\aSocialAuth\Support\Config;
+use Elcreator\aSocialAuth\Support\Config;
 
 /**
  * Redirect handling, and the open-redirect defence around the return parameter.

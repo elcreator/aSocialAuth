@@ -1,9 +1,9 @@
 <?php
 
-use EvolutionCMS\aSocialAuth\Exceptions\SocialAuthException;
-use EvolutionCMS\aSocialAuth\Models\SocialAccount;
-use EvolutionCMS\aSocialAuth\Support\Identity;
-use EvolutionCMS\aSocialAuth\Support\UserResolver;
+use Elcreator\aSocialAuth\Exceptions\SocialAuthException;
+use Elcreator\aSocialAuth\Models\SocialAccount;
+use Elcreator\aSocialAuth\Support\Identity;
+use Elcreator\aSocialAuth\Support\UserResolver;
 
 /**
  * The merge flow, against a real database.
@@ -201,9 +201,9 @@ describe('unlinking', function () {
         TestConfig::set('cms.settings.aSocialAuth.providers.telegram.enabled', true);
         TestConfig::set('cms.settings.aSocialAuth.providers.telegram.keys', ['id' => 'a', 'secret' => 'b']);
 
-        expect(\EvolutionCMS\aSocialAuth\Support\ProviderRegistry::enabled())->toHaveCount(2);
+        expect(\Elcreator\aSocialAuth\Support\ProviderRegistry::enabled())->toHaveCount(2);
 
-        $google = \EvolutionCMS\aSocialAuth\Support\ProviderRegistry::find('google');
+        $google = \Elcreator\aSocialAuth\Support\ProviderRegistry::find('google');
         UserResolver::forLink($google, makeProfile(['identifier' => 'g-1']), $userId);
 
         expect(Identity::connectableProviders($userId)->pluck('slug')->all())->toBe(['telegram']);

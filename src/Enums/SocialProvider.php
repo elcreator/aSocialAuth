@@ -1,6 +1,6 @@
 <?php
 
-namespace EvolutionCMS\aSocialAuth\Enums;
+namespace Elcreator\aSocialAuth\Enums;
 
 /**
  * The catalogue of identity providers HybridAuth ships with.

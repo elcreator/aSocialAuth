@@ -1,6 +1,6 @@
 <?php
 
-namespace EvolutionCMS\aSocialAuth\Support;
+namespace Elcreator\aSocialAuth\Support;
 
 /**
  * Typed access to `cms.settings.aSocialAuth`, and the single place URLs are built.
@@ -636,12 +636,12 @@ class Config
 
     public static function getSocialAccountModel(): string
     {
-        return (string) static::get('models.social_account', \EvolutionCMS\aSocialAuth\Models\SocialAccount::class);
+        return (string) static::get('models.social_account', \Elcreator\aSocialAuth\Models\SocialAccount::class);
     }
 
     public static function getRegisteredProviderModel(): string
     {
-        return (string) static::get('models.registered_provider', \EvolutionCMS\aSocialAuth\Models\RegisteredProvider::class);
+        return (string) static::get('models.registered_provider', \Elcreator\aSocialAuth\Models\RegisteredProvider::class);
     }
 
     public static function getUserModel(): string

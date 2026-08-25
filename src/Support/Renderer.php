@@ -1,6 +1,6 @@
 <?php
 
-namespace EvolutionCMS\aSocialAuth\Support;
+namespace Elcreator\aSocialAuth\Support;
 
 /**
  * Renders the package's UI.

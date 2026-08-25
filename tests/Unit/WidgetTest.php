@@ -1,7 +1,7 @@
 <?php
 
-use EvolutionCMS\aSocialAuth\Support\Config;
-use EvolutionCMS\aSocialAuth\Support\Renderer;
+use Elcreator\aSocialAuth\Support\Config;
+use Elcreator\aSocialAuth\Support\Renderer;
 
 /**
  * The widget contract: stylable from CSS, embeddable inline or as a modal, and

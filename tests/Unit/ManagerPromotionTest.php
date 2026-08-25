@@ -1,8 +1,8 @@
 <?php
 
-use EvolutionCMS\aSocialAuth\Support\Config;
-use EvolutionCMS\aSocialAuth\Support\Promotion;
-use EvolutionCMS\aSocialAuth\Support\UserResolver;
+use Elcreator\aSocialAuth\Support\Config;
+use Elcreator\aSocialAuth\Support\Promotion;
+use Elcreator\aSocialAuth\Support\UserResolver;
 
 /**
  * Can an administrator give manager rights to someone who signs in socially?

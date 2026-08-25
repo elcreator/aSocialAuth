@@ -8,8 +8,8 @@ Context file for AI coding agents working on this repository.
 
 Authentication for **Evolution CMS 3.5+**: social login through [HybridAuth](https://github.com/hybridauth/hybridauth), multi-provider account linking, and e-mail/password login, registration and recovery — one package, one widget.
 
-- Package: `evolution-cms/a-social-auth` · type `evolutioncms-plugin`
-- Namespace: `EvolutionCMS\aSocialAuth\` → `src/`
+- Package: `elcreator/asocialauth` · type `evolutioncms-plugin`
+- Namespace: `Elcreator\aSocialAuth\` → `src/`
 - PHP 8.3+ · MIT
 
 Run the tests with `composer test` (Pest, 258 unit tests, no database or booted CMS needed).

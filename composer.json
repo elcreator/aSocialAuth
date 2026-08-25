@@ -1,5 +1,5 @@
 {
-  "name": "evolution-cms/a-social-auth",
+  "name": "elcreator/asocialauth",
   "description": "Social and password authentication for Evolution CMS: every HybridAuth provider, multi-provider account linking, and e-mail/password login, registration and recovery in one configurable widget.",
   "type": "evolutioncms-plugin",
   "keywords": [
@@ -22,10 +22,10 @@
     "evolution-cms/evolution": "^3.5.2",
     "hybridauth/hybridauth": "^3.0"
   },
-  "license": "MIT",
+  "license": "GPL-3.0-or-later",
   "autoload": {
     "psr-4": {
-      "EvolutionCMS\\aSocialAuth\\": "src/"
+      "Elcreator\\aSocialAuth\\": "src/"
     }
   },
   "scripts": {
@@ -35,7 +35,7 @@
   "extra": {
     "laravel": {
       "providers": [
-        "EvolutionCMS\\aSocialAuth\\aSocialAuthServiceProvider"
+        "Elcreator\\aSocialAuth\\aSocialAuthServiceProvider"
       ]
     }
   },

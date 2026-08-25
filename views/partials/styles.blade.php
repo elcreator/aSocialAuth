@@ -1,5 +1,5 @@
 @php
-    use EvolutionCMS\aSocialAuth\Support\Renderer;
+    use Elcreator\aSocialAuth\Support\Renderer;
 
     /**
      * The package's own stylesheet — a starting point, not a requirement.

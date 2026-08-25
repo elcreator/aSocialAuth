@@ -1,6 +1,6 @@
 <?php
 
-use EvolutionCMS\aSocialAuth\Enums\SocialProvider;
+use Elcreator\aSocialAuth\Enums\SocialProvider;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;

@@ -1,5 +1,5 @@
 @php
-    use EvolutionCMS\aSocialAuth\Support\Config;
+    use Elcreator\aSocialAuth\Support\Config;
 
     /**
      * The provider button list on its own, shared by the manager login page, the

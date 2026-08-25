@@ -1,5 +1,5 @@
 @php
-    use EvolutionCMS\aSocialAuth\Support\Config;
+    use Elcreator\aSocialAuth\Support\Config;
 
     /**
      * The e-mail-and-password forms.

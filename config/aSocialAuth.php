@@ -1,6 +1,6 @@
 <?php
 
-use EvolutionCMS\aSocialAuth\Enums\SocialProvider;
+use Elcreator\aSocialAuth\Enums\SocialProvider;
 
 return [
 
@@ -304,7 +304,7 @@ return [
     |--------------------------------------------------------------------------
     |
     | Everything HybridAuth ships is available by slug — 50+ networks, listed in
-    | EvolutionCMS\aSocialAuth\Enums\SocialProvider. This block only says which
+    | Elcreator\aSocialAuth\Enums\SocialProvider. This block only says which
     | of them this site offers and with what credentials; it does not limit the
     | choice. Any catalogued slug can be added:
     |
@@ -413,8 +413,8 @@ return [
     |--------------------------------------------------------------------------
     */
     'models' => [
-        'social_account'      => EvolutionCMS\aSocialAuth\Models\SocialAccount::class,
-        'registered_provider' => EvolutionCMS\aSocialAuth\Models\RegisteredProvider::class,
+        'social_account'      => Elcreator\aSocialAuth\Models\SocialAccount::class,
+        'registered_provider' => Elcreator\aSocialAuth\Models\RegisteredProvider::class,
         'user'                => EvolutionCMS\Models\User::class,
     ],
 ];

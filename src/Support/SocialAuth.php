@@ -1,9 +1,9 @@
 <?php
 
-namespace EvolutionCMS\aSocialAuth\Support;
+namespace Elcreator\aSocialAuth\Support;
 
-use EvolutionCMS\aSocialAuth\Exceptions\ChallengeRequiredException;
-use EvolutionCMS\aSocialAuth\Exceptions\SocialAuthException;
+use Elcreator\aSocialAuth\Exceptions\ChallengeRequiredException;
+use Elcreator\aSocialAuth\Exceptions\SocialAuthException;
 use EvolutionCMS\Exceptions\ServiceActionException;
 
 /**

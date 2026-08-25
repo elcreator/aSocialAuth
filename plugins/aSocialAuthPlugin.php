@@ -1,11 +1,11 @@
 <?php
 
-use EvolutionCMS\aSocialAuth\Support\Config;
-use EvolutionCMS\aSocialAuth\Support\FlowState;
-use EvolutionCMS\aSocialAuth\Support\Log;
-use EvolutionCMS\aSocialAuth\Support\Promotion;
-use EvolutionCMS\aSocialAuth\Support\Renderer;
-use EvolutionCMS\aSocialAuth\Support\UserResolver;
+use Elcreator\aSocialAuth\Support\Config;
+use Elcreator\aSocialAuth\Support\FlowState;
+use Elcreator\aSocialAuth\Support\Log;
+use Elcreator\aSocialAuth\Support\Promotion;
+use Elcreator\aSocialAuth\Support\Renderer;
+use Elcreator\aSocialAuth\Support\UserResolver;
 
 /**
  * Event listeners. Loaded by the service provider via loadPluginsFrom().

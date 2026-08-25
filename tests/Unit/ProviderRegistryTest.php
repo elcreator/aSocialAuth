@@ -1,6 +1,6 @@
 <?php
 
-use EvolutionCMS\aSocialAuth\Support\ProviderRegistry;
+use Elcreator\aSocialAuth\Support\ProviderRegistry;
 
 /**
  * Config normalisation and the credential gate. These run without a database:
@@ -107,7 +107,7 @@ describe('the credential gate', function () {
 
         expect(ProviderRegistry::credentials('google'))->toBe(['id' => 'x', 'secret' => 'y']);
 
-        $registryColumns = (new \EvolutionCMS\aSocialAuth\Models\RegisteredProvider())->getFillable();
+        $registryColumns = (new \Elcreator\aSocialAuth\Models\RegisteredProvider())->getFillable();
 
         expect($registryColumns)->not->toContain('keys');
         expect($registryColumns)->not->toContain('secret');
@@ -183,7 +183,7 @@ describe('syncing config into the table', function () {
         TestConfig::set('cms.settings.aSocialAuth.providers.google.label', 'Work Google');
         ProviderRegistry::sync();
 
-        expect(\EvolutionCMS\aSocialAuth\Models\RegisteredProvider::query()->where('slug', 'google')->count())->toBe(1);
+        expect(\Elcreator\aSocialAuth\Models\RegisteredProvider::query()->where('slug', 'google')->count())->toBe(1);
         expect(ProviderRegistry::find('google')->label)->toBe('Work Google');
     });
 });

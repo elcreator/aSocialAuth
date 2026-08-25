@@ -1,11 +1,11 @@
 <?php
 
-use EvolutionCMS\aSocialAuth\Http\Controllers\CredentialsController;
-use EvolutionCMS\aSocialAuth\Http\Controllers\SocialCallbackController;
-use EvolutionCMS\aSocialAuth\Http\Controllers\SocialLinkController;
-use EvolutionCMS\aSocialAuth\Http\Controllers\SocialLoginController;
-use EvolutionCMS\aSocialAuth\Http\Middleware\VerifyRequestToken;
-use EvolutionCMS\aSocialAuth\Support\Config;
+use Elcreator\aSocialAuth\Http\Controllers\CredentialsController;
+use Elcreator\aSocialAuth\Http\Controllers\SocialCallbackController;
+use Elcreator\aSocialAuth\Http\Controllers\SocialLinkController;
+use Elcreator\aSocialAuth\Http\Controllers\SocialLoginController;
+use Elcreator\aSocialAuth\Http\Middleware\VerifyRequestToken;
+use Elcreator\aSocialAuth\Support\Config;
 use Illuminate\Support\Facades\Route;
 
 /**

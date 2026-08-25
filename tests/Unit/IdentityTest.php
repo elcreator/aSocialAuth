@@ -1,7 +1,7 @@
 <?php
 
-use EvolutionCMS\aSocialAuth\Support\Config;
-use EvolutionCMS\aSocialAuth\Support\Identity;
+use Elcreator\aSocialAuth\Support\Config;
+use Elcreator\aSocialAuth\Support\Identity;
 
 /**
  * Reading the current session.

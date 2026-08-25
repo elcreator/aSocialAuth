@@ -1,8 +1,8 @@
 <?php
 
-namespace EvolutionCMS\aSocialAuth\Exceptions;
+namespace Elcreator\aSocialAuth\Exceptions;
 
-use EvolutionCMS\aSocialAuth\Support\PendingLogin;
+use Elcreator\aSocialAuth\Support\PendingLogin;
 
 /**
  * "This identity is proven, but I need something more before you may sign in."

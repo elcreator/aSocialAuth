@@ -1,6 +1,6 @@
 <?php
 
-namespace EvolutionCMS\aSocialAuth\Exceptions;
+namespace Elcreator\aSocialAuth\Exceptions;
 
 /**
  * A social login that failed for a reason the visitor can be told about.

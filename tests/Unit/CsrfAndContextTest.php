@@ -1,7 +1,7 @@
 <?php
 
-use EvolutionCMS\aSocialAuth\Http\Middleware\VerifyRequestToken;
-use EvolutionCMS\aSocialAuth\Support\Config;
+use Elcreator\aSocialAuth\Http\Middleware\VerifyRequestToken;
+use Elcreator\aSocialAuth\Support\Config;
 use Illuminate\Http\Request;
 
 /**

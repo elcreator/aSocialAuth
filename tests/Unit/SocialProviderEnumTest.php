@@ -1,6 +1,6 @@
 <?php
 
-use EvolutionCMS\aSocialAuth\Enums\SocialProvider;
+use Elcreator\aSocialAuth\Enums\SocialProvider;
 
 /**
  * The catalogue must stay in step with the HybridAuth version installed —

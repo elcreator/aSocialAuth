@@ -1,6 +1,6 @@
 <?php
 
-namespace EvolutionCMS\aSocialAuth\Http\Middleware;
+namespace Elcreator\aSocialAuth\Http\Middleware;
 
 use Closure;
 

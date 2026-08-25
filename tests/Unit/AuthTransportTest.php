@@ -1,9 +1,9 @@
 <?php
 
-use EvolutionCMS\aSocialAuth\Enums\SocialProvider;
-use EvolutionCMS\aSocialAuth\Support\Config;
-use EvolutionCMS\aSocialAuth\Support\HybridAuthManager;
-use EvolutionCMS\aSocialAuth\Support\UserResolver;
+use Elcreator\aSocialAuth\Enums\SocialProvider;
+use Elcreator\aSocialAuth\Support\Config;
+use Elcreator\aSocialAuth\Support\HybridAuthManager;
+use Elcreator\aSocialAuth\Support\UserResolver;
 
 /**
  * The different ways a provider can answer, and the things that quietly block
@@ -48,7 +48,7 @@ describe('protocol families', function () {
 
         expect($config['callback'])->toBe('https://example.test/asocialauth/steam/callback');
         expect($config['keys'])->toBe([]);
-        expect(\EvolutionCMS\aSocialAuth\Support\ProviderRegistry::hasRequiredKeys('steam'))->toBeTrue();
+        expect(\Elcreator\aSocialAuth\Support\ProviderRegistry::hasRequiredKeys('steam'))->toBeTrue();
     });
 
     it('passes provider-specific adapter options straight through', function () {
@@ -77,7 +77,7 @@ describe('protocol families', function () {
             ->toBe(SocialProvider::X->defaultScope());
 
         TestConfig::set('cms.settings.aSocialAuth.providers.x.scope', 'users.read');
-        \EvolutionCMS\aSocialAuth\Support\ProviderRegistry::flush();
+        \Elcreator\aSocialAuth\Support\ProviderRegistry::flush();
 
         expect(HybridAuthManager::adapterConfig(insertProvider('x2', ['adapter' => 'X']))['scope'] ?? null)
             ->toBeNull();

@@ -1,6 +1,6 @@
 <?php
 
-use EvolutionCMS\aSocialAuth\Support\FlowState;
+use Elcreator\aSocialAuth\Support\FlowState;
 
 /**
  * The state that has to survive the trip to the provider and back. Everything a

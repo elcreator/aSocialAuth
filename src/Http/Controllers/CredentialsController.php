@@ -1,17 +1,17 @@
 <?php
 
-namespace EvolutionCMS\aSocialAuth\Http\Controllers;
+namespace Elcreator\aSocialAuth\Http\Controllers;
 
-use EvolutionCMS\aSocialAuth\Exceptions\ChallengeRequiredException;
-use EvolutionCMS\aSocialAuth\Exceptions\SocialAuthException;
-use EvolutionCMS\aSocialAuth\Support\Config;
-use EvolutionCMS\aSocialAuth\Support\Credentials;
-use EvolutionCMS\aSocialAuth\Support\EmailVerifier;
-use EvolutionCMS\aSocialAuth\Support\FlowState;
-use EvolutionCMS\aSocialAuth\Support\Identity;
-use EvolutionCMS\aSocialAuth\Support\Log;
-use EvolutionCMS\aSocialAuth\Support\PendingLogin;
-use EvolutionCMS\aSocialAuth\Support\SocialAuth;
+use Elcreator\aSocialAuth\Exceptions\ChallengeRequiredException;
+use Elcreator\aSocialAuth\Exceptions\SocialAuthException;
+use Elcreator\aSocialAuth\Support\Config;
+use Elcreator\aSocialAuth\Support\Credentials;
+use Elcreator\aSocialAuth\Support\EmailVerifier;
+use Elcreator\aSocialAuth\Support\FlowState;
+use Elcreator\aSocialAuth\Support\Identity;
+use Elcreator\aSocialAuth\Support\Log;
+use Elcreator\aSocialAuth\Support\PendingLogin;
+use Elcreator\aSocialAuth\Support\SocialAuth;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 

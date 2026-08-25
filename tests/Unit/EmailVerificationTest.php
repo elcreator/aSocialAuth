@@ -1,10 +1,10 @@
 <?php
 
-use EvolutionCMS\aSocialAuth\Exceptions\SocialAuthException;
-use EvolutionCMS\aSocialAuth\Models\EmailVerification;
-use EvolutionCMS\aSocialAuth\Support\Config;
-use EvolutionCMS\aSocialAuth\Support\EmailVerifier;
-use EvolutionCMS\aSocialAuth\Support\UserResolver;
+use Elcreator\aSocialAuth\Exceptions\SocialAuthException;
+use Elcreator\aSocialAuth\Models\EmailVerification;
+use Elcreator\aSocialAuth\Support\Config;
+use Elcreator\aSocialAuth\Support\EmailVerifier;
+use Elcreator\aSocialAuth\Support\UserResolver;
 
 /** The address currently stored on a user. */
 function currentEmail(int $userId): string
@@ -208,12 +208,12 @@ describe('the round trip', function () {
         $tg     = insertProvider('telegram');
         $userId = makeUser(['email' => UserResolver::placeholderEmail($tg, 'tg-9'), 'verified' => 0]);
 
-        expect(\EvolutionCMS\aSocialAuth\Support\Promotion::canBecomeManager($userId))->toBeFalse();
+        expect(\Elcreator\aSocialAuth\Support\Promotion::canBecomeManager($userId))->toBeFalse();
 
         EmailVerifier::request($userId, 'ada@example.test', Config::CONTEXT_WEB);
         EmailVerifier::confirm(EmailVerifier::pendingFor($userId)->token);
 
-        expect(\EvolutionCMS\aSocialAuth\Support\Promotion::canBecomeManager($userId))->toBeTrue();
+        expect(\Elcreator\aSocialAuth\Support\Promotion::canBecomeManager($userId))->toBeTrue();
     });
 
     it('lets the proven address then attract that person\'s other providers', function () {

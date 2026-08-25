@@ -430,11 +430,11 @@ function makeUser(array $attributes = []): int
 /**
  * Insert a provider registry row and return the model.
  */
-function insertProvider(string $slug, array $attributes = []): \EvolutionCMS\aSocialAuth\Models\RegisteredProvider
+function insertProvider(string $slug, array $attributes = []): \Elcreator\aSocialAuth\Models\RegisteredProvider
 {
-    $case = \EvolutionCMS\aSocialAuth\Enums\SocialProvider::fromSlug($slug);
+    $case = \Elcreator\aSocialAuth\Enums\SocialProvider::fromSlug($slug);
 
-    return \EvolutionCMS\aSocialAuth\Models\RegisteredProvider::query()->create(array_merge([
+    return \Elcreator\aSocialAuth\Models\RegisteredProvider::query()->create(array_merge([
         'slug'    => $slug,
         'adapter' => $case?->hybridauthProvider() ?? ucfirst($slug),
         'label'   => $case?->label() ?? ucfirst($slug),
@@ -452,8 +452,8 @@ function resetTestState(): void
     UserManager::reset();
     $_SESSION = [];
 
-    \EvolutionCMS\aSocialAuth\Support\ProviderRegistry::flush();
-    \EvolutionCMS\aSocialAuth\Support\Renderer::resetStyles();
+    \Elcreator\aSocialAuth\Support\ProviderRegistry::flush();
+    \Elcreator\aSocialAuth\Support\Renderer::resetStyles();
 
     evo()->mail      = [];
     evo()->events    = [];
@@ -479,11 +479,11 @@ function makeProfile(array $attributes = []): \Hybridauth\User\Profile
 /**
  * A registry row without touching the database.
  */
-function makeProvider(string $slug, array $attributes = []): \EvolutionCMS\aSocialAuth\Models\RegisteredProvider
+function makeProvider(string $slug, array $attributes = []): \Elcreator\aSocialAuth\Models\RegisteredProvider
 {
-    $case = \EvolutionCMS\aSocialAuth\Enums\SocialProvider::fromSlug($slug);
+    $case = \Elcreator\aSocialAuth\Enums\SocialProvider::fromSlug($slug);
 
-    $provider = new \EvolutionCMS\aSocialAuth\Models\RegisteredProvider();
+    $provider = new \Elcreator\aSocialAuth\Models\RegisteredProvider();
     $provider->forceFill(array_merge([
         'id'      => crc32($slug),
         'slug'    => $slug,

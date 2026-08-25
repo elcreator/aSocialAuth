@@ -1,7 +1,7 @@
 <?php
 
-use EvolutionCMS\aSocialAuth\Exceptions\SocialAuthException;
-use EvolutionCMS\aSocialAuth\Support\UserResolver;
+use Elcreator\aSocialAuth\Exceptions\SocialAuthException;
+use Elcreator\aSocialAuth\Support\UserResolver;
 
 /**
  * Reading a provider profile, and the placeholder-address scheme that lets

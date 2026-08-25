@@ -1,6 +1,6 @@
 <?php
 
-use EvolutionCMS\aSocialAuth\Support\Config;
+use Elcreator\aSocialAuth\Support\Config;
 
 /**
  * The e-mail-and-password half of the widget: configuration, URL assembly and
