@@ -163,11 +163,6 @@ class Config
 
         $siteHost = (string) parse_url(static::getSiteUrl(), PHP_URL_HOST);
 
-        if ($siteHost === '') {
-            $siteHost = (string) ($_SERVER['HTTP_HOST'] ?? '');
-            $siteHost = (string) parse_url('http://' . $siteHost, PHP_URL_HOST);
-        }
-
         return $siteHost !== '' && strcasecmp((string) $parts['host'], $siteHost) === 0;
     }
 
@@ -671,7 +666,8 @@ class Config
 
         $scheme = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
 
-        return $scheme . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . '/';
+        // Not the Host header: the visitor chooses it, and this URL ends up in redirects.
+        return $scheme . '://localhost/';
     }
 
     public static function getManagerUrl(): string

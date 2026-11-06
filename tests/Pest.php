@@ -207,10 +207,12 @@ final class TestEvoApp
         return $this->mail === [] ? null : $this->mail[count($this->mail) - 1];
     }
 
+    public static string $siteUrl = 'https://example.test/';
+
     public function getConfig(string $key, $default = null)
     {
         return match ($key) {
-            'site_url' => 'https://example.test/',
+            'site_url' => self::$siteUrl,
             'base_url' => '/',
             default    => $default,
         };
