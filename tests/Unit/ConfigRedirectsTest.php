@@ -90,3 +90,23 @@ describe('context resolution', function () {
         expect(Config::resolveContext('https://example.test/manager/'))->toBe('mgr');
     });
 });
+
+it('never takes the name of the site from the Host header', function () {
+    $host = $_SERVER['HTTP_HOST'] ?? null;
+    $_SERVER['HTTP_HOST'] = 'evil.test';
+    TestEvoApp::$siteUrl = '';
+
+    try {
+        $isOwnHost = new ReflectionMethod(Config::class, 'isOwnHost');
+
+        expect(Config::getSiteUrl())->not->toContain('evil.test')
+            ->and($isOwnHost->invoke(null, ['host' => 'evil.test']))->toBeFalse();
+    } finally {
+        TestEvoApp::$siteUrl = 'https://example.test/';
+        if ($host === null) {
+            unset($_SERVER['HTTP_HOST']);
+        } else {
+            $_SERVER['HTTP_HOST'] = $host;
+        }
+    }
+});
