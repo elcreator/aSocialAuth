@@ -45,9 +45,16 @@ class SocialAuth
             'social'                  => true,
             'social_provider'         => $providerSlug,
             'social_provider_user_id' => $providerUserId,
-        ], $extra);
+        ], $extra, ['id' => $userId, 'context' => $context]);
 
         try {
+            if (!in_array($context, [Config::CONTEXT_WEB, Config::CONTEXT_MGR], true)) {
+                throw SocialAuthException::lexicon('error_login');
+            }
+            if ($context === Config::CONTEXT_MGR) {
+                static::requireManagerAccess($userId);
+            }
+
             // Entering through loginById means the core's `loginById` stage and
             // every '*' pipe run for a social sign-in exactly as for a password
             // one. That is deliberate: a second factor configured under '*'
@@ -68,6 +75,28 @@ class SocialAuth
 
             throw SocialAuthException::lexicon('error_login');
         }
+    }
+
+    protected static function requireManagerAccess(int $userId): void
+    {
+        $model = Config::getUserModel();
+        $user = $model::query()->with('attributes')->find($userId);
+        $roleId = (int) ($user?->attributes?->role ?? 0);
+
+        if ($roleId === 1) {
+            return;
+        }
+
+        if ($roleId > 0) {
+            $role = \EvolutionCMS\Models\UserRole::find($roleId);
+            if ($role !== null && ((bool) $role->getAttribute('access_permissions')
+                || \EvolutionCMS\Models\RolePermissions::query()
+                    ->where('role_id', $roleId)->where('permission', 'access_permissions')->exists())) {
+                return;
+            }
+        }
+
+        throw SocialAuthException::lexicon('error_login');
     }
 
     /**

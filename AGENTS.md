@@ -24,7 +24,7 @@ database/migrations/                social_accounts, permissions, social_provide
 lang/en/{global,login}.php          every user-visible string
 plugins/aSocialAuthPlugin.php       event listeners (loaded by the provider)
 src/
-  Enums/SocialProvider.php          the catalogue: 52 HybridAuth providers
+  Enums/SocialProvider.php          the catalogue: 54 HybridAuth fork providers
   Exceptions/
     SocialAuthException.php         a failure the visitor may be told about
     ChallengeRequiredException.php  a pipe needs interactive input
@@ -136,7 +136,7 @@ Nothing but config:
 
 Optionally add an icon to `views/partials/icon.blade.php` keyed by slug — without one the button gets a neutral glyph and still works.
 
-**After a HybridAuth upgrade** that adds providers, regenerate the enum: slug is `strtolower(ClassName)`, case name is the upper-snaked class name. `SocialProviderEnumTest` compares the enum against `vendor/hybridauth/hybridauth/src/Provider/*.php` and fails if they drift.
+**After a HybridAuth upgrade** that adds providers, regenerate the enum: slug is `strtolower(ClassName)`, case name is the upper-snaked class name. The dependency is `elcreator/hybridauth`. `SocialProviderEnumTest` locates the installed provider directory through reflection and fails if the enum drifts.
 
 ---
 

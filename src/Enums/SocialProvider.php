@@ -67,6 +67,7 @@ enum SocialProvider: string
     case STEEMCONNECT = 'steemconnect';
     case STRAVA = 'strava';
     case TELEGRAM = 'telegram';
+    case TELEGRAM_WIDGET = 'telegramwidget';
     case TUMBLR = 'tumblr';
     case TWITCHTV = 'twitchtv';
     case TWITTER = 'twitter';
@@ -127,6 +128,7 @@ enum SocialProvider: string
             self::STEEMCONNECT => 'SteemConnect',
             self::STRAVA => 'Strava',
             self::TELEGRAM => 'Telegram',
+            self::TELEGRAM_WIDGET => 'TelegramWidget',
             self::TUMBLR => 'Tumblr',
             self::TWITCHTV => 'TwitchTV',
             self::TWITTER => 'Twitter',
@@ -197,6 +199,7 @@ enum SocialProvider: string
             self::STEEMCONNECT => 'SteemConnect',
             self::STRAVA => 'Strava',
             self::TELEGRAM => 'Telegram',
+            self::TELEGRAM_WIDGET => 'Telegram (Widget)',
             self::TUMBLR => 'Tumblr',
             self::TWITCHTV => 'Twitch',
             self::TWITTER => 'Twitter',

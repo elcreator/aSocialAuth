@@ -342,9 +342,19 @@ function bootTestDatabase(): void
 
     $schema = $capsule::schema();
 
-    foreach (['social_email_verifications', 'social_accounts', 'social_providers', 'user_attributes', 'users'] as $table) {
+    foreach (['social_email_verifications', 'social_accounts', 'social_providers', 'user_attributes', 'users', 'role_permissions', 'user_roles'] as $table) {
         $schema->dropIfExists($table);
     }
+
+    $schema->create('user_roles', function ($table) {
+        $table->increments('id');
+        $table->unsignedInteger('access_permissions')->default(0);
+    });
+    $schema->create('role_permissions', function ($table) {
+        $table->increments('id');
+        $table->unsignedInteger('role_id');
+        $table->string('permission');
+    });
 
     $schema->create('users', function ($table) {
         $table->increments('id');

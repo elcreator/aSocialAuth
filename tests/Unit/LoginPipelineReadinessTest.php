@@ -22,11 +22,13 @@ use EvolutionCMS\Exceptions\ServiceActionException;
  */
 
 it('signs in through loginById so every pipe on that stage runs', function () {
-    SocialAuth::signIn(7, 'mgr', 'google', 'g-123');
+    bootTestDatabase();
+    $id = makeUser(['role' => 1]);
+    SocialAuth::signIn($id, 'mgr', 'google', 'g-123');
 
     expect(UserManager::$logins)->toHaveCount(1);
     expect(UserManager::lastLogin())->toMatchArray([
-        'id'      => 7,
+        'id'      => $id,
         'context' => 'mgr',
     ]);
 });
@@ -58,7 +60,7 @@ it('lets extra data override the defaults', function () {
 it('turns a pipe refusal into a message for the visitor', function () {
     UserManager::$throw = new ServiceActionException('second factor required');
 
-    expect(fn () => SocialAuth::signIn(7, 'mgr', 'google'))
+    expect(fn () => SocialAuth::signIn(7, 'web', 'google'))
         ->toThrow(SocialAuthException::class, 'second factor required');
 });
 
@@ -66,7 +68,7 @@ it('does not leak an unexpected failure to the visitor', function () {
     UserManager::$throw = new RuntimeException('SQLSTATE[HY000] connection refused');
 
     try {
-        SocialAuth::signIn(7, 'mgr', 'google');
+        SocialAuth::signIn(7, 'web', 'google');
         $this->fail('expected a SocialAuthException');
     } catch (SocialAuthException $e) {
         expect($e->getMessage())->not->toContain('SQLSTATE');

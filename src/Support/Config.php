@@ -39,11 +39,11 @@ class Config
      */
     public static function configuredContext(): string
     {
-        $context = strtolower(trim((string) static::get('context', self::CONTEXT_MGR)));
+        $context = strtolower(trim((string) static::get('context', self::CONTEXT_WEB)));
 
         return in_array($context, [self::CONTEXT_MGR, self::CONTEXT_WEB, self::CONTEXT_AUTO], true)
             ? $context
-            : self::CONTEXT_MGR;
+            : self::CONTEXT_WEB;
     }
 
     /**

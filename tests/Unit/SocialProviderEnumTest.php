@@ -8,7 +8,7 @@ use Elcreator\aSocialAuth\Enums\SocialProvider;
  */
 
 it('has a case for every HybridAuth provider that ships with the library', function () {
-    $dir = __DIR__ . '/../../vendor/hybridauth/hybridauth/src/Provider';
+    $dir = dirname((new ReflectionClass(\Hybridauth\Provider\Google::class))->getFileName());
 
     expect(is_dir($dir))->toBeTrue('HybridAuth provider directory is missing');
 

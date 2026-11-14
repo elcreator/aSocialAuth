@@ -2,7 +2,7 @@
 
 Authentication for [Evolution CMS](https://github.com/evolution-cms/evolution) 3.5+ — social, password, or both, in one widget.
 
-- **Every provider HybridAuth ships.** All 52 of them, catalogued as an enum. Enabling one is a config entry; there is no per-provider code.
+- **Every provider the HybridAuth fork ships.** All 54 of them, catalogued as an enum. Enabling one is a config entry; there is no per-provider code.
 - **One account, many identities.** Sign in with Google today, add Telegram tomorrow — both open the same account. Identities are rows, not columns, so the tenth provider costs what the first did.
 - **E-mail and password too.** Sign in, register, request a reset link, set a new password. A login box with nothing but third-party buttons strands everyone who uses none of them.
 - **Registration without an e-mail address.** Whenever a provider returns none — Telegram, Steam, a user who withheld consent — the account still works, and the owner can add and verify an address later.
@@ -18,7 +18,7 @@ Authentication for [Evolution CMS](https://github.com/evolution-cms/evolution) 3
 |---|---|
 | PHP | 8.3+ |
 | Evolution CMS | 3.5.2+ |
-| hybridauth/hybridauth | dev-master |
+| elcreator/hybridauth | ^3.13.1 |
 
 ---
 
@@ -139,13 +139,15 @@ Evolution CMS 3.x keeps manager users and web users in one `users` table, separa
 
 | `context` | Effect |
 |---|---|
-| `mgr` (default) | Manager session |
-| `web` | Front-end session, for a member area |
+| `mgr` | Manager session; requires a role granting manager access |
+| `web` (default) | Front-end session, for a member area |
 | `auto` | Whichever side the flow started on |
+
+Manager login requires an explicit `ASOCIALAUTH_CONTEXT=mgr` or `auto`. Every manager social sign-in, including a resumed challenge, checks the user's current role before entering the login pipeline. Role 0 is refused; administrator role 1 and roles granting `access_permissions` are allowed. A Referer header only selects a requested context and never grants manager access.
 
 ### Providers
 
-The five scaffolded in the config are only a starting point. Any of the 52 slugs in `Elcreator\aSocialAuth\Enums\SocialProvider` works:
+The five scaffolded in the config are only a starting point. Any of the 54 slugs in `Elcreator\aSocialAuth\Enums\SocialProvider` works:
 
 ```php
 'providers' => [

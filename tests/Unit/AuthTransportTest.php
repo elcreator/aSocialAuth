@@ -95,18 +95,44 @@ describe('the callback route', function () {
 
     it('confirms Apple really does answer by form POST', function () {
         // Not an assumption: the adapter sets it, so the route has to cope.
-        $apple = file_get_contents(__DIR__ . '/../../vendor/hybridauth/hybridauth/src/Provider/Apple.php');
+        $apple = file_get_contents((new ReflectionClass(\Hybridauth\Provider\Apple::class))->getFileName());
 
         expect($apple)->toContain("'response_mode'");
         expect($apple)->toContain('form_post');
     });
 
-    it('confirms the OpenID adapter reads either verb', function () {
-        $openid = file_get_contents(__DIR__ . '/../../vendor/hybridauth/hybridauth/src/Adapter/OpenID.php');
-
-        // $_REQUEST, not $_GET — the adapter itself is verb-agnostic.
-        expect($openid)->toContain('$_REQUEST[\'openid_mode\']');
-    });
+    it('confirms the OpenID adapter reads either verb', function ($method) {
+        $get = $_GET;
+        $post = $_POST;
+        $previousMethod = $_SERVER['REQUEST_METHOD'] ?? null;
+        $previousUri = $_SERVER['REQUEST_URI'] ?? null;
+        try {
+            $_SERVER['REQUEST_METHOD'] = $method;
+            $_SERVER['REQUEST_URI'] = '/callback';
+            $_GET = $method === 'GET' ? ['openid_mode' => 'id_res'] : [];
+            $_POST = $method === 'POST' ? ['openid_mode' => 'id_res'] : [];
+            $adapter = new class(['callback' => 'https://example.test/callback',
+                'openid_identifier' => 'https://provider.invalid/']) extends \Hybridauth\Provider\OpenID {
+                public function isConnected() { return false; }
+                protected function authenticateBegin() { throw new RuntimeException('Callback was not read'); }
+                protected function authenticateFinish() { return true; }
+            };
+            expect($adapter->authenticate())->toBeTrue();
+        } finally {
+            $_GET = $get;
+            $_POST = $post;
+            if ($previousUri === null) {
+                unset($_SERVER['REQUEST_URI']);
+            } else {
+                $_SERVER['REQUEST_URI'] = $previousUri;
+            }
+            if ($previousMethod === null) {
+                unset($_SERVER['REQUEST_METHOD']);
+            } else {
+                $_SERVER['REQUEST_METHOD'] = $previousMethod;
+            }
+        }
+    })->with(['GET', 'POST']);
 
     it('is not CSRF-checked, in either verb', function () use ($routes) {
         $callback = strstr($routes(), "Config::routePattern('callback')");

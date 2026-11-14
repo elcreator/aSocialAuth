@@ -20,7 +20,7 @@
   "require": {
     "php": "^8.3",
     "evolution-cms/evolution": "^3.5.2",
-    "hybridauth/hybridauth": "^3.0"
+    "elcreator/hybridauth": "^3.13.1"
   },
   "license": "GPL-3.0-or-later",
   "autoload": {

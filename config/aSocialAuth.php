@@ -30,11 +30,11 @@ return [
     |   'auto' – whichever side the flow started on: 'mgr' when the visitor came
     |            from the manager login page, 'web' otherwise.
     |
-    | 'auto' is the right answer for a site doing both. 'mgr' is the default only
-    | because that is what installs of this package predating contexts did.
+    | 'web' is the default. Manager login requires an explicit 'mgr' or 'auto'
+    | setting and a user role that grants manager access.
     |
     */
-    'context' => env('ASOCIALAUTH_CONTEXT', 'mgr'),
+    'context' => env('ASOCIALAUTH_CONTEXT', 'web'),
 
     /*
     |--------------------------------------------------------------------------

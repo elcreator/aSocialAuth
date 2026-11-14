@@ -69,9 +69,9 @@ describe('context resolution', function () {
         expect(Config::resolveContext('https://example.test/'))->toBe('mgr');
     });
 
-    it('falls back to mgr when the configured context is nonsense', function () {
+    it('falls back to web when the configured context is nonsense', function () {
         TestConfig::set('cms.settings.aSocialAuth.context', 'sideways');
-        expect(Config::configuredContext())->toBe('mgr');
+        expect(Config::configuredContext())->toBe('web');
     });
 
     it('picks the context from where the flow started when set to auto', function () {
