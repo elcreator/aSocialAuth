@@ -3,6 +3,7 @@
 namespace Elcreator\aSocialAuth\Http\Middleware;
 
 use Closure;
+use Illuminate\Http\Response;
 
 /**
  * CSRF verification the package can actually rely on.
@@ -44,7 +45,7 @@ class VerifyRequestToken
     public function handle($request, Closure $next)
     {
         if (!$this->tokensMatch($request)) {
-            abort(419, 'CSRF token mismatch.');
+            return new Response('CSRF token mismatch.', 419);
         }
 
         return $next($request);

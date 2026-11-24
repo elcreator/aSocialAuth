@@ -16,7 +16,7 @@ namespace Elcreator\aSocialAuth\Support;
  */
 class PendingLogin
 {
-    public const KEY = 'asocialauth.pending';
+    public const KEY = 'asocialauth_pending';
 
     /** Long enough to type a code out of an authenticator app, no longer. */
     public const TTL_SECONDS = 600;

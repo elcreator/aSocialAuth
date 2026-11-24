@@ -4,6 +4,7 @@ namespace Elcreator\aSocialAuth\Support;
 
 use Elcreator\aSocialAuth\Models\RegisteredProvider;
 use Hybridauth\Adapter\AdapterInterface;
+use Hybridauth\HttpClient\Util;
 
 /**
  * Builds a configured HybridAuth adapter for a registered provider.
@@ -40,6 +41,31 @@ class HybridAuthManager
         }
 
         return $adapter;
+    }
+
+    /**
+     * Start the adapter's flow and return the URL it wants the browser sent to,
+     * or null when it is already connected.
+     *
+     * HybridAuth would send the header and exit. That skips the session
+     * middleware, so a first visitor's OAuth state is lost with the session, and
+     * it ends a worker. Returned as an ordinary response, neither happens.
+     */
+    public static function begin(AdapterInterface $adapter): ?string
+    {
+        $url = null;
+
+        Util::setRedirectHandler(static function ($target) use (&$url) {
+            $url = (string) $target;
+        });
+
+        try {
+            $adapter->authenticate();
+        } finally {
+            Util::setRedirectHandler(null);
+        }
+
+        return $url;
     }
 
     /**

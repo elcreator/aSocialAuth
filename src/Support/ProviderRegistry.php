@@ -32,10 +32,10 @@ class ProviderRegistry
     protected const FINGERPRINT_KEY = 'asocialauth.registry.fingerprint';
 
     /** Guards against syncing more than once in a single request. */
-    protected static bool $syncedThisRequest = false;
+    protected const SYNCED = 'registry.synced';
 
     /** Memoised per request; the table does not change under us mid-request. */
-    protected static ?Collection $enabledCache = null;
+    protected const ENABLED = 'registry.enabled';
 
     /**
      * Providers the site offers, ordered, ready to render as buttons.
@@ -44,8 +44,10 @@ class ProviderRegistry
      */
     public static function enabled(): Collection
     {
-        if (static::$enabledCache !== null) {
-            return static::$enabledCache;
+        $cached = RequestState::get(static::ENABLED);
+
+        if ($cached instanceof Collection) {
+            return $cached;
         }
 
         static::syncIfStale();
@@ -57,7 +59,7 @@ class ProviderRegistry
             // must not take the login page down with it.
             Log::warning('Provider registry unavailable: ' . $e->getMessage());
 
-            return static::$enabledCache = new Collection();
+            return static::remember(new Collection());
         }
 
         // A provider whose credentials went missing must stop being offered even
@@ -66,7 +68,14 @@ class ProviderRegistry
             static fn (RegisteredProvider $provider) => static::hasRequiredKeys($provider->slug)
         )->values();
 
-        return static::$enabledCache = $usable;
+        return static::remember($usable);
+    }
+
+    protected static function remember(Collection $providers): Collection
+    {
+        RequestState::set(static::ENABLED, $providers);
+
+        return $providers;
     }
 
     /**
@@ -184,7 +193,7 @@ class ProviderRegistry
      */
     public static function syncIfStale(): void
     {
-        if (static::$syncedThisRequest) {
+        if (RequestState::get(static::SYNCED)) {
             return;
         }
 
@@ -194,7 +203,7 @@ class ProviderRegistry
         if ($cache !== null) {
             try {
                 if ($cache->get(static::FINGERPRINT_KEY) === $fingerprint) {
-                    static::$syncedThisRequest = true;
+                    RequestState::set(static::SYNCED, true);
 
                     return;
                 }
@@ -204,7 +213,7 @@ class ProviderRegistry
         }
 
         if (static::sync()) {
-            static::$syncedThisRequest = true;
+            RequestState::set(static::SYNCED, true);
 
             if ($cache !== null) {
                 try {
@@ -289,19 +298,19 @@ class ProviderRegistry
             }
         }
 
-        static::$enabledCache = null;
+        RequestState::forget(static::ENABLED);
 
         return true;
     }
 
     /**
-     * Drop the memoised state. Tests and long-running workers need this after
+     * Drop the memoised state, and with it the fingerprint. Tests need this after
      * changing config between calls.
      */
     public static function flush(): void
     {
-        static::$enabledCache     = null;
-        static::$syncedThisRequest = false;
+        RequestState::forget(static::ENABLED);
+        RequestState::forget(static::SYNCED);
 
         $cache = static::cache();
 

@@ -14,6 +14,7 @@ use Elcreator\aSocialAuth\Support\PendingLogin;
 use Elcreator\aSocialAuth\Support\SocialAuth;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * The e-mail-and-password forms.
@@ -36,7 +37,7 @@ class CredentialsController extends SocialController
         $context = $this->context($request);
 
         if (!Config::isEnabled() || !Config::credentialsLoginEnabled()) {
-            abort(404);
+            throw new NotFoundHttpException();
         }
 
         try {
@@ -69,7 +70,7 @@ class CredentialsController extends SocialController
         $context = $this->context($request);
 
         if (!Config::isEnabled() || !Config::credentialsRegistrationEnabled()) {
-            abort(404);
+            throw new NotFoundHttpException();
         }
 
         try {
@@ -111,7 +112,7 @@ class CredentialsController extends SocialController
         $context = $this->context($request);
 
         if (!Config::isEnabled() || !Config::credentialsRecoveryEnabled()) {
-            abort(404);
+            throw new NotFoundHttpException();
         }
 
         Credentials::requestReset((string) $request->input('email', ''), $context);
@@ -129,7 +130,7 @@ class CredentialsController extends SocialController
         $context = $this->context($request);
 
         if (!Config::isEnabled() || !Config::credentialsRecoveryEnabled()) {
-            abort(404);
+            throw new NotFoundHttpException();
         }
 
         try {
@@ -156,7 +157,7 @@ class CredentialsController extends SocialController
         $context = $this->context($request);
 
         if (!Config::isEnabled() || !Config::emailVerificationEnabled()) {
-            abort(404);
+            throw new NotFoundHttpException();
         }
 
         $userId = Identity::currentUserId($context);
@@ -193,7 +194,7 @@ class CredentialsController extends SocialController
         $context = $this->context($request);
 
         if (!Config::isEnabled() || !Config::emailVerificationEnabled()) {
-            abort(404);
+            throw new NotFoundHttpException();
         }
 
         try {

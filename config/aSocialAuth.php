@@ -79,6 +79,7 @@ return [
             'callback' => '{provider}/callback',
             'link'     => '{provider}/link',
             'unlink'   => '{provider}/unlink',
+            'onetap'   => '{provider}/onetap',
 
             'credentials_login'    => 'credentials/login',
             'credentials_register' => 'credentials/register',
@@ -150,7 +151,7 @@ return [
     |
     |     [[aSocialAuthButtons? &mode=`modal` &trigger=`Sign in`]]
     |
-    | `views` lets a site point any of the three surfaces at its own Blade view
+    | `views` lets a site point any of the surfaces at its own Blade view
     | instead of publishing and editing the packaged one.
     |
     */
@@ -162,6 +163,7 @@ return [
         'views' => [
             'login'         => 'aSocialAuth::widget.login',
             'identities'    => 'aSocialAuth::widget.identities',
+            'one_tap'       => 'aSocialAuth::widget.one-tap',
             'manager_login' => 'aSocialAuth::manager.login-buttons',
         ],
     ],
@@ -323,6 +325,10 @@ return [
     |   icon     – slug of the built-in icon to use, when it differs
     |   adapter  – HybridAuth class name, to point a slug at a different adapter
     |   extra    – further keys passed straight to the HybridAuth adapter
+    |   one_tap  – ['enabled' => …, 'auto_select' => …], Google only: the prompt
+    |              that signs a visitor in without leaving the page. With
+    |              auto_select a returning visitor needs no click at all. Front
+    |              end only, and off entirely under context 'mgr'.
     |
     | The five below are scaffolded because they are the common case. All are off
     | until credentials exist, and a provider whose required keys are empty stays
@@ -337,6 +343,10 @@ return [
             'keys'    => [
                 'id'     => env('ASOCIALAUTH_GOOGLE_CLIENT_ID', ''),
                 'secret' => env('ASOCIALAUTH_GOOGLE_CLIENT_SECRET', ''),
+            ],
+            'one_tap' => [
+                'enabled'     => env('ASOCIALAUTH_GOOGLE_ONE_TAP', false),
+                'auto_select' => env('ASOCIALAUTH_GOOGLE_AUTO_SELECT', true),
             ],
             'sort' => 10,
         ],

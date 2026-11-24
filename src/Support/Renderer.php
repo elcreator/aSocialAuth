@@ -12,7 +12,7 @@ namespace Elcreator\aSocialAuth\Support;
 class Renderer
 {
     /** Whether the stylesheet has already gone out this request. */
-    protected static bool $stylesEmitted = false;
+    protected const STYLES_EMITTED = 'styles.emitted';
 
     /**
      * Whether the styles partial should emit anything right now.
@@ -27,19 +27,21 @@ class Renderer
             return false;
         }
 
-        if (static::$stylesEmitted) {
+        if (RequestState::get(static::STYLES_EMITTED)) {
             return false;
         }
 
-        return static::$stylesEmitted = true;
+        RequestState::set(static::STYLES_EMITTED, true);
+
+        return true;
     }
 
     /**
-     * Reset the once-per-request guard. For tests and long-running workers.
+     * Reset the once-per-request guard. For tests.
      */
     public static function resetStyles(): void
     {
-        static::$stylesEmitted = false;
+        RequestState::forget(static::STYLES_EMITTED);
     }
 
     /**
@@ -71,7 +73,7 @@ class Renderer
      * The front-end sign-in widget: credential forms plus provider buttons,
      * inline or in a modal.
      *
-     * @param array $options mode, form, trigger, class, credentials, providers
+     * @param array $options mode, form, trigger, class, credentials, providers, onetap
      */
     public static function loginWidget(?string $returnPath = null, array $options = []): string
     {
@@ -97,6 +99,11 @@ class Renderer
             return '';
         }
 
+        SessionCookie::want();
+
+        // Prompting over a "choose a new password" form would interrupt it.
+        $showOneTap = $showProviders && $form !== 'reset' && static::flag($options['onetap'] ?? true);
+
         return static::render(Config::view('login'), [
             'providers'       => $providers,
             'mode'            => Config::normaliseMode($options['mode'] ?? Config::widgetMode()),
@@ -108,7 +115,33 @@ class Renderer
             'resetToken'      => static::resetTokenFromRequest(),
             'trigger'         => (string) ($options['trigger'] ?? __('aSocialAuth::login.sign_in')),
             'wrapperClass'    => trim((string) ($options['class'] ?? Config::wrapperClass())),
+            'oneTap'          => $showOneTap ? OneTap::viewData($returnPath) : null,
         ]);
+    }
+
+    /**
+     * The One Tap prompt on its own, for pages without a sign-in widget.
+     */
+    public static function oneTapWidget(?string $returnPath = null): string
+    {
+        if (!Config::isEnabled()) {
+            return '';
+        }
+
+        $oneTap = OneTap::viewData($returnPath);
+
+        // A refused attempt returns to this page, so its message belongs here.
+        $error = OneTap::provider() !== null && Identity::anyCurrentUserId() === null
+            ? FlowState::takeError()
+            : null;
+
+        if ($oneTap === null && $error === null) {
+            return '';
+        }
+
+        SessionCookie::want();
+
+        return static::render(Config::view('one_tap'), ['oneTap' => $oneTap, 'error' => $error]);
     }
 
     /**

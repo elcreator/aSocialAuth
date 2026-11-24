@@ -2,7 +2,6 @@
 
 namespace Elcreator\aSocialAuth\Http\Controllers;
 
-use Elcreator\aSocialAuth\Exceptions\ChallengeRequiredException;
 use Elcreator\aSocialAuth\Exceptions\SocialAuthException;
 use Elcreator\aSocialAuth\Models\RegisteredProvider;
 use Elcreator\aSocialAuth\Support\Config;
@@ -10,8 +9,6 @@ use Elcreator\aSocialAuth\Support\FlowState;
 use Elcreator\aSocialAuth\Support\HybridAuthManager;
 use Elcreator\aSocialAuth\Support\Identity;
 use Elcreator\aSocialAuth\Support\Log;
-use Elcreator\aSocialAuth\Support\PendingLogin;
-use Elcreator\aSocialAuth\Support\SocialAuth;
 use Elcreator\aSocialAuth\Support\UserResolver;
 use Hybridauth\User\Profile;
 use Illuminate\Http\RedirectResponse;
@@ -138,57 +135,6 @@ class SocialCallbackController extends SocialController
     }
 
     /**
-     * Sign the visitor in, creating or linking the account as configured.
-     *
-     * @throws SocialAuthException
-     */
-    protected function completeLogin(
-        RegisteredProvider $registered,
-        Profile $profile,
-        array $flow,
-        string $context
-    ): RedirectResponse {
-        $resolved = UserResolver::forLogin($registered, $profile);
-        $userId   = $resolved['user_id'];
-
-        try {
-            SocialAuth::signIn(
-                $userId,
-                $context,
-                $registered->slug,
-                UserResolver::providerUserId($profile)
-            );
-        } catch (ChallengeRequiredException $e) {
-            // A pipe — TOTP, SMS, device confirmation — needs input that an
-            // OAuth callback cannot carry. Park the resolved identity and hand
-            // the visitor to the page that can ask. Nothing is signed in yet.
-            PendingLogin::store(
-                $userId,
-                $context,
-                $registered->slug,
-                $flow['return'],
-                $e->challenge(),
-                $e->payload()
-            );
-
-            Log::info(sprintf(
-                'Social sign-in for user #%d via %s paused for challenge "%s".',
-                $userId,
-                $registered->slug,
-                $e->challenge()
-            ));
-
-            return redirect()->away(
-                Config::absoluteFor($context, $e->redirectPath())
-            );
-        }
-
-        $this->fireLoginEvent($registered, $profile, $userId, $resolved['created'], $context);
-
-        return redirect()->away($this->destination($context, $flow['return']));
-    }
-
-    /**
      * Attach this identity to the account that started the flow.
      *
      * @throws SocialAuthException
@@ -234,33 +180,5 @@ class SocialCallbackController extends SocialController
         }
 
         return redirect()->away($this->destination($context, $flow['return'], true));
-    }
-
-    protected function fireLoginEvent(
-        RegisteredProvider $registered,
-        Profile $profile,
-        int $userId,
-        bool $created,
-        string $context
-    ): void {
-        if (!function_exists('evo')) {
-            return;
-        }
-
-        try {
-            evo()->invokeEvent('OnSocialAuthLogin', [
-                'provider'         => $registered->slug,
-                'provider_user_id' => UserResolver::providerUserId($profile),
-                'user_id'          => $userId,
-                'context'          => $context,
-                'created'          => $created,
-                'ip'               => request()->ip(),
-                'user_agent'       => (string) request()->userAgent(),
-            ]);
-        } catch (\Throwable $e) {
-            // Events are advisory; a listener blowing up must not undo a login
-            // that has already happened.
-            Log::warning('OnSocialAuthLogin listener failed: ' . $e->getMessage());
-        }
     }
 }

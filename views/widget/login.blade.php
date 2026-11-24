@@ -22,6 +22,7 @@
      * @var string|null $resetToken
      * @var string      $trigger      modal trigger label
      * @var string      $wrapperClass extra classes for the wrapper
+     * @var array|null  $oneTap       One Tap prompt settings
      */
     $providers       = $providers ?? collect();
     $mode            = ($mode ?? 'inline') === 'modal' ? 'modal' : 'inline';
@@ -123,4 +124,6 @@
             })();
         </script>
     @endif
+
+    @include('aSocialAuth::partials.one-tap', ['oneTap' => $oneTap ?? null])
 </div>

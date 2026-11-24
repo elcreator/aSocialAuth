@@ -12,7 +12,7 @@ Authentication for **Evolution CMS 3.5+**: social login through [HybridAuth](htt
 - Namespace: `Elcreator\aSocialAuth\` → `src/`
 - PHP 8.3+ · MIT
 
-Run the tests with `composer test` (Pest, 258 unit tests, no database or booted CMS needed).
+Run the tests with `composer test` (Pest, 354 unit tests, no database or booted CMS needed).
 
 ---
 
@@ -25,6 +25,7 @@ lang/en/{global,login}.php          every user-visible string
 plugins/aSocialAuthPlugin.php       event listeners (loaded by the provider)
 src/
   Enums/SocialProvider.php          the catalogue: 54 HybridAuth fork providers
+  Console/PackagesCommand.php       asocialauth:packages — list or install optional packages
   Exceptions/
     SocialAuthException.php         a failure the visitor may be told about
     ChallengeRequiredException.php  a pipe needs interactive input
@@ -35,6 +36,7 @@ src/
       SocialLoginController.php     GET  {prefix}/{provider}
       SocialCallbackController.php  GET  {prefix}/{provider}/callback
       SocialLinkController.php      GET  …/link, POST …/unlink
+      OneTapController.php          POST {prefix}/{provider}/onetap
       CredentialsController.php     POST {prefix}/credentials/{login,register,recover,reset}
   Models/
     RegisteredProvider.php          social_providers
@@ -46,17 +48,23 @@ src/
     UserResolver.php                profile → Evolution CMS user
     Credentials.php                 e-mail/password login, register, recover, reset
     SocialAuth.php                  public API: signIn(), completePendingLogin()
+    OneTap.php                      when to prompt, the nonce, remembering a sign-out
+    Packages.php                    features that need an optional Composer package
+    IdTokenVerifier.php             browser-supplied ID token → profile
     Identity.php                    who is signed in; linked identities
     FlowState.php                   intent across the OAuth round trip
     PendingLogin.php                a sign-in paused by a challenge
     Promotion.php                   is this account fit for a manager role?
     Renderer.php                    view data assembly
+    RequestState.php                once-per-request state, safe in a worker
+    SessionCookie.php               keeps a new guest's session reachable
     Log.php                         evo()->logEvent() wrapper
 views/
   manager/login-buttons.blade.php   manager login page
   widget/login.blade.php            front-end sign-in, inline or modal
   widget/identities.blade.php       linked accounts
-  partials/{styles,icon,buttons,credentials}.blade.php
+  widget/one-tap.blade.php          One Tap on its own
+  partials/{styles,icon,buttons,credentials,one-tap}.blade.php
 tests/Unit/                         Pest
 ```
 
@@ -114,10 +122,27 @@ A pipe needing interactive input throws `ChallengeRequiredException::at('/two-fa
 
 ## Session facts worth knowing
 
+- **A new guest gets no session cookie on an ordinary page** (3.5.9), and the session is then discarded as unreachable. Anything rendering a CSRF token or starting a flow must call `SessionCookie::want()`, or the POST that follows always fails. Only a document sends it: a routed response gets its cookie from `StartSession`.
+- **Statics outlive the request in a worker.** Per-request state goes through `RequestState`.
+- **`NO_SESSION` switches the package off** (`Config::isEnabled()`), in the manager too.
+- **No dot in a `$_SESSION` key.** It is synced into the Laravel store, whose `put()` reads a dot as nesting; in a worker the value is then gone.
+- **There is no `abort()`** in Evolution CMS up to 3.5.9. Throw `NotFoundHttpException`, or return a response.
 - `$_SESSION` is the shared store; `EvoSessionProxy` syncs it with Laravel's. HybridAuth uses it too. Write flow state there, not to Laravel's flash — the manager login page renders outside the lifecycle that would replay one.
 - `UserLogin::writeSession()` **regenerates the session id** and copies the data across, so a message queued before login survives. `FlowStateTest` covers this.
 - It also sets `$_SESSION['usertype'] = 'manager'` unconditionally, even for a `web` context login. That is a core quirk, and harmless — `ManagerTheme::isAuthManager()` only destroys a session when `mgrValidated` is set *and* usertype is not `manager`.
 - Manager and web sessions coexist: `mgrValidated`/`mgrInternalKey` and `webValidated`/`webInternalKey`. Always ask per context.
+
+---
+
+## One Tap
+
+Lives here rather than as a HybridAuth adapter on purpose: a separate adapter would be a separate provider row, and one Google account would become two identities. `SocialProvider::oneTap()` says which providers have it; nothing else names Google.
+
+- **Web sessions only.** It can complete without a click, so it must never be able to open `mgrValidated`. `OneTapController` hardcodes the web context instead of calling `Config::resolveContext()`.
+- **`firebase/php-jwt` is optional** (`suggest` + `conflict`, as in aMount). Only `IdTokenVerifier` uses it, behind `Packages::available()`; `OneTap::offeredBy()` is the gate.
+- **The token is attacker-controlled input.** `IdTokenVerifier` pins RS256 and checks signature, `iss`, `aud`, `exp` and the session nonce, which is spent on first use. php-jwt only checks `exp` when present, so its presence is checked separately.
+- **`Renderer` never prompts** someone signed in, mid-challenge, or refused in the last ten minutes. Dropping any of those makes automatic sign-in loop.
+- **Logout destroys the session**, so "has signed out" is a cookie, set from `OnManagerLogout` (which the core fires for web logouts too) and `OnWebLogout`.
 
 ---
 

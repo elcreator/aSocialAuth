@@ -19,7 +19,19 @@ class Config
 
     public static function isEnabled(): bool
     {
-        return (bool) static::get('enable', false);
+        return (bool) static::get('enable', false) && !static::sessionsDisabled();
+    }
+
+    /**
+     * Whether the site runs without visitor sessions (NO_SESSION).
+     *
+     * Nothing here works without one: the CSRF token, the OAuth state and the
+     * login itself live in it. That includes the buttons on the manager login
+     * page, whose OAuth routes are front-end ones.
+     */
+    public static function sessionsDisabled(): bool
+    {
+        return defined('NO_SESSION') && (bool) constant('NO_SESSION');
     }
 
     /**
@@ -204,6 +216,7 @@ class Config
             'callback' => '{provider}/callback',
             'link'     => '{provider}/link',
             'unlink'   => '{provider}/unlink',
+            'onetap'   => '{provider}/onetap',
 
             'credentials_login'    => 'credentials/login',
             'credentials_register' => 'credentials/register',
@@ -285,6 +298,11 @@ class Config
     public static function buildUnlinkUrl(string $providerSlug): string
     {
         return static::routeUrl('unlink', $providerSlug);
+    }
+
+    public static function buildOneTapUrl(string $providerSlug): string
+    {
+        return static::routeUrl('onetap', $providerSlug);
     }
 
     /**
@@ -429,7 +447,7 @@ class Config
     }
 
     /**
-     * The view backing one of the three surfaces, so a site can swap in its own
+     * The view backing one of the surfaces, so a site can swap in its own
      * without publishing and editing the packaged one.
      */
     public static function view(string $surface): string
@@ -437,12 +455,37 @@ class Config
         $defaults = [
             'login'         => 'aSocialAuth::widget.login',
             'identities'    => 'aSocialAuth::widget.identities',
+            'one_tap'       => 'aSocialAuth::widget.one-tap',
             'manager_login' => 'aSocialAuth::manager.login-buttons',
         ];
 
         $view = trim((string) static::get('ui.views.' . $surface, ''));
 
         return $view !== '' ? $view : ($defaults[$surface] ?? $defaults['login']);
+    }
+
+    // ------------------------------------------------------------------
+    // One Tap
+    // ------------------------------------------------------------------
+
+    public static function oneTapEnabled(string $providerSlug): bool
+    {
+        return (bool) (static::oneTap($providerSlug)['enabled'] ?? false);
+    }
+
+    /**
+     * Whether a returning visitor is signed in without a click.
+     */
+    public static function oneTapAutoSelect(string $providerSlug): bool
+    {
+        return (bool) (static::oneTap($providerSlug)['auto_select'] ?? true);
+    }
+
+    protected static function oneTap(string $providerSlug): array
+    {
+        $oneTap = ProviderRegistry::configFor($providerSlug)['one_tap'] ?? [];
+
+        return is_array($oneTap) ? $oneTap : ['enabled' => (bool) $oneTap];
     }
 
     // ------------------------------------------------------------------

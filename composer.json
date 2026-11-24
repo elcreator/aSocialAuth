@@ -22,6 +22,12 @@
     "evolution-cms/evolution": "^3.5.2",
     "elcreator/hybridauth": "^3.13.1"
   },
+  "suggest": {
+    "firebase/php-jwt": "Google One Tap: verifies the ID token the browser hands over"
+  },
+  "conflict": {
+    "firebase/php-jwt": "<6.4"
+  },
   "license": "GPL-3.0-or-later",
   "autoload": {
     "psr-4": {
@@ -40,6 +46,7 @@
     }
   },
   "require-dev": {
+    "firebase/php-jwt": "^7.0",
     "pestphp/pest": "^3.0"
   },
   "config": {
