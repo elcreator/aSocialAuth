@@ -5,9 +5,9 @@ namespace Elcreator\aSocialAuth\Support;
 /**
  * Makes sure a visitor who is shown a form can come back with the same session.
  *
- * Up to 3.5.9 Evolution CMS sends a new guest no session cookie with an ordinary
- * document, and then discards the session as unreachable — taking the CSRF token
- * and the nonce we have just rendered with it.
+ * Without evolution-cms/evolution#2639 (3.6: #2640) the core sends a new guest no
+ * session cookie with an ordinary document, and then discards the session as
+ * unreachable — taking the CSRF token and the nonce we have just rendered with it.
  *
  * The cookie is only noted as wanted while rendering, and sent when a *document*
  * goes out (OnWebPagePrerender). A routed response gets its cookie from the

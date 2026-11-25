@@ -122,11 +122,11 @@ A pipe needing interactive input throws `ChallengeRequiredException::at('/two-fa
 
 ## Session facts worth knowing
 
-- **A new guest gets no session cookie on an ordinary page** (3.5.9), and the session is then discarded as unreachable. Anything rendering a CSRF token or starting a flow must call `SessionCookie::want()`, or the POST that follows always fails. Only a document sends it: a routed response gets its cookie from `StartSession`.
+- **A new guest gets no session cookie on an ordinary page** of a core without evolution-cms/evolution#2639 (3.6: #2640), and the session is then discarded as unreachable. Anything rendering a CSRF token or starting a flow must call `SessionCookie::want()`, or the POST that follows always fails. Only a document sends it: a routed response gets its cookie from `StartSession`.
 - **Statics outlive the request in a worker.** Per-request state goes through `RequestState`.
 - **`NO_SESSION` switches the package off** (`Config::isEnabled()`), in the manager too.
 - **No dot in a `$_SESSION` key.** It is synced into the Laravel store, whose `put()` reads a dot as nesting; in a worker the value is then gone.
-- **There is no `abort()`** in Evolution CMS up to 3.5.9. Throw `NotFoundHttpException`, or return a response.
+- **There is no `abort()`** in a core without evolution-cms/evolution#2639 (3.6: #2640). Throw `NotFoundHttpException`, or return a response.
 - `$_SESSION` is the shared store; `EvoSessionProxy` syncs it with Laravel's. HybridAuth uses it too. Write flow state there, not to Laravel's flash — the manager login page renders outside the lifecycle that would replay one.
 - `UserLogin::writeSession()` **regenerates the session id** and copies the data across, so a message queued before login survives. `FlowStateTest` covers this.
 - It also sets `$_SESSION['usertype'] = 'manager'` unconditionally, even for a `web` context login. That is a core quirk, and harmless — `ManagerTheme::isAuthManager()` only destroys a session when `mgrValidated` is set *and* usertype is not `manager`.
