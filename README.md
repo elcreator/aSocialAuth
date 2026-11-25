@@ -4,6 +4,7 @@ Authentication for [Evolution CMS](https://github.com/evolution-cms/evolution) 3
 
 - **Every provider the HybridAuth fork ships.** All 54 of them, catalogued as an enum. Enabling one is a config entry; there is no per-provider code.
 - **One account, many identities.** Sign in with Google today, add Telegram tomorrow — both open the same account. Identities are rows, not columns, so the tenth provider costs what the first did.
+- **Google One Tap.** Signs a returning visitor in without a click, on any page, into the same account as the Google button.
 - **E-mail and password too.** Sign in, register, request a reset link, set a new password. A login box with nothing but third-party buttons strands everyone who uses none of them.
 - **Registration without an e-mail address.** Whenever a provider returns none — Telegram, Steam, a user who withheld consent — the account still works, and the owner can add and verify an address later.
 - **Configurable URLs.** Don't want `/asocialauth/`? Change one value.
@@ -19,6 +20,7 @@ Authentication for [Evolution CMS](https://github.com/evolution-cms/evolution) 3
 | PHP | 8.3+ |
 | Evolution CMS | 3.5.2+ |
 | elcreator/hybridauth | ^3.13.1 |
+| firebase/php-jwt | 6.4+, only for Google One Tap |
 
 ---
 
@@ -56,7 +58,7 @@ Every manager language Evolution CMS ships with is translated: `az be bg cs da d
 
 ## The widget
 
-Three snippets, all of which take `&return=` to come back to the page they sit on.
+The snippets, all of which take `&return=` to come back to the page they sit on.
 
 ```
 [[aSocialAuthLogin]]                                   sign-in: forms + provider buttons
@@ -65,6 +67,7 @@ Three snippets, all of which take `&return=` to come back to the page they sit o
 [[aSocialAuthButtons]]                                  provider buttons only
 [[aSocialAuthCredentials]]                              e-mail and password only
 [[aSocialAuthIdentities]]                               linked accounts, for a profile page
+[!aSocialAuthOneTap!]                                   Google One Tap on its own, for any page
 ```
 
 | Parameter | Values | Meaning |
@@ -73,11 +76,39 @@ Three snippets, all of which take `&return=` to come back to the page they sit o
 | `form` | `login`, `register`, `recover`, `reset` | Which credential form to show |
 | `credentials` | `1` (default), `0` | Show the e-mail/password forms |
 | `providers` | `1` (default), `0` | Show the provider buttons |
+| `onetap` | `1` (default), `0` | Include the One Tap prompt, when it is enabled |
 | `trigger` | any string | Modal trigger label |
 | `class` | any string | Extra classes on the wrapper |
 | `return` | a site-relative path | Where to land afterwards |
 
 The modal is progressive: with JavaScript off the dialog renders inline, so the trigger is never a dead button.
+
+### Google One Tap and automatic sign-in
+
+One Tap needs a package the rest does not. Install it through the CMS:
+
+```bash
+php artisan asocialauth:packages                     # what is installed, what is missing
+php artisan asocialauth:packages --install=onetap
+```
+
+```env
+ASOCIALAUTH_GOOGLE_ONE_TAP=true
+ASOCIALAUTH_GOOGLE_AUTO_SELECT=true   # default; false always asks for one click
+```
+
+`[[aSocialAuthLogin]]` and `[[aSocialAuthButtons]]` then include the prompt, and `[!aSocialAuthOneTap!]` puts it on any other page — place it inside `<body>`. Call the snippet uncached (`[! !]`): it carries this session's nonce and CSRF token. However many widgets are on a page, it prompts once.
+
+A first-time visitor confirms with one click. After that, Google signs them in without one, provided they are signed in to exactly one Google account they have already used here. The browser decides, not this package: Chrome allows one automatic attempt per ten minutes and may ask for one confirmation, and Safari and Firefox always need a click.
+
+In the Google console add your site under **Authorized JavaScript origins** (scheme and host only). For local work add both `http://localhost` and `http://localhost:<port>`; anything else has to be HTTPS.
+
+- **Without the package it is absent.** Nothing else is affected; the event log says once a day what to install.
+- **Same account as the button.** The identity is the `google` one, so linking, e-mail matching, registration and the login pipeline, second factor included, behave exactly the same.
+- **Front end only.** It always opens a web session, whatever the visitor's role, and is off entirely under `context: mgr`.
+- **Signing out sticks.** Logging out through `\UserManager::logout()`, or anything that fires `OnWebLogout`, holds automatic sign-in back until the next social sign-in. The prompt is still offered.
+- **No loops.** After a refused attempt the prompt stays away for ten minutes.
+- **CSP.** If you send one, allow `https://accounts.google.com/gsi/client` in `script-src`, `https://accounts.google.com/gsi/style` in `style-src` and `https://accounts.google.com/gsi/` in `frame-src` and `connect-src`. The prompt's own script is inline.
 
 ### Styling
 
@@ -321,7 +352,7 @@ SESSION_SECURE_COOKIE=true    # None requires Secure; HTTPS only
 
 The package cannot make that change for you — it is a site-wide cookie setting — so instead it names the cause in the event log rather than leaving you with "expired".
 
-Two things that are **not** a problem, since they come up: the routes carry no manager-auth middleware (the visitor is not signed in yet — that is the point), and the widget uses no iframe and loads no third-party asset, so `X-Frame-Options: SAMEORIGIN` and a strict CSP leave it alone.
+Two things that are **not** a problem, since they come up: the routes carry no manager-auth middleware (the visitor is not signed in yet — that is the point), and the widget uses no iframe and loads no third-party asset, so `X-Frame-Options: SAMEORIGIN` and a strict CSP leave it alone. The exception is [Google One Tap](#google-one-tap-and-automatic-sign-in), which is off by default.
 
 ---
 
@@ -369,14 +400,21 @@ Event::listen('evolution.OnSocialAuthLogin', function (array $params) {
 
 ---
 
+## Worker mode
+
+Under the FrankenPHP workers of Evolution CMS 3.6 nothing carries over from one visitor to the next, and the redirect to a provider is an ordinary response, so a sign-in does not recycle the worker. As for any extension, restart the workers after changing `.env` or installing a package.
+
+---
+
 ## Security notes
 
 - **Open redirects.** `&return=` accepts same-site absolute paths only; an absolute URL, a protocol-relative one, a backslash or a control character is discarded.
 - **CSRF — with a caveat specific to Evolution CMS.** Every POST here is checked by the package's own `VerifyRequestToken`, *not* by the core's `csrf` alias. `EvolutionCMS\Middleware\VerifyCsrfToken` returns early when `$_SESSION['mgrValidated']` is empty — sound for the core, whose state-changing endpoints all sit behind a manager session, and wrong for this package, whose endpoints are aimed at front-end users who only ever have `webValidated`. Using the core alias would leave these routes open to cross-site POSTs while showing as protected on the route list. Concretely, that allowed a forged `credentials/email` claim → confirmation link to the attacker's mailbox → password reset → account takeover. The package's middleware reads the same `$_SESSION['_token']` the core's `csrf_token()` helper issues, so the forms need nothing special.
 - **The provider legs are exempt**, in both verbs — a callback comes from a third party and cannot carry a token; HybridAuth's `state` parameter guards them instead.
+- **One Tap tokens are verified here.** The ID token arrives through the browser, so its RS256 signature, issuer, audience, expiry and a one-time nonce bound to the session are all checked, and the POST is CSRF-checked.
 - **Referer-driven context checks the host, not just the path.** Under `context: auto`, the side a flow started on is read from the `Referer`, which is chosen by whoever wrote the page the visitor clicked from. Matching on the path alone let any page at `evil.test/manager/` decide that an ordinary member's login should open a *manager* session — handing them `mgrValidated`, which the core reads as "backend user" well beyond this package (site-offline bypass, the debug-output guard in the exception handler, the document-group merge in `getUserDocGroups()`).
 - **Account enumeration.** Sign-in failures, and the recovery form, give the same answer whether or not the account exists.
-- **Routes 404 when disabled**, rather than erroring — off means absent, not "installed but broken".
+- **Routes 404 when disabled**, rather than erroring — off means absent, not "installed but broken". A site that runs without visitor sessions (`NO_SESSION`) counts as disabled: the CSRF token, the OAuth state and the login itself all need one.
 - **Auto-registration is off by default** (`registration.enable`), and creates role 0 when on.
 
 ---
@@ -388,7 +426,7 @@ composer install
 composer test
 ```
 
-258 unit tests, no database or booted CMS required.
+354 unit tests, no database or booted CMS required.
 
 ---
 

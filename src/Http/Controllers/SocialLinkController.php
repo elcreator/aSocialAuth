@@ -11,6 +11,7 @@ use Elcreator\aSocialAuth\Support\Log;
 use Elcreator\aSocialAuth\Support\ProviderRegistry;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Adding and removing identities on an account that is already signed in.
@@ -35,7 +36,7 @@ class SocialLinkController extends SocialController
         );
 
         if (!Config::linkingEnabled()) {
-            abort(404);
+            throw new NotFoundHttpException();
         }
 
         $userId = Identity::currentUserId($context);
@@ -53,8 +54,7 @@ class SocialLinkController extends SocialController
         );
 
         try {
-            $adapter = HybridAuthManager::adapterFor($registered);
-            $adapter->authenticate();
+            $url = HybridAuthManager::begin(HybridAuthManager::adapterFor($registered));
         } catch (\Throwable $e) {
             Log::error("Link initiation failed for '{$registered->slug}': " . $e->getMessage());
             FlowState::clear();
@@ -62,7 +62,7 @@ class SocialLinkController extends SocialController
             return $this->fail(__('aSocialAuth::login.error_generic'), $context);
         }
 
-        return redirect()->away(Config::buildCallbackUrl($registered->slug));
+        return redirect()->away($url ?? Config::buildCallbackUrl($registered->slug));
     }
 
     /**
@@ -73,7 +73,7 @@ class SocialLinkController extends SocialController
     public function unlink(Request $request, string $provider): RedirectResponse
     {
         if (!Config::isEnabled() || !Config::linkingEnabled()) {
-            abort(404);
+            throw new NotFoundHttpException();
         }
 
         $context = Identity::currentContext() ?? Config::resolveContext(
@@ -93,7 +93,7 @@ class SocialLinkController extends SocialController
         $registered = ProviderRegistry::find($provider);
 
         if ($registered === null) {
-            abort(404);
+            throw new NotFoundHttpException();
         }
 
         $account = SocialAccount::query()

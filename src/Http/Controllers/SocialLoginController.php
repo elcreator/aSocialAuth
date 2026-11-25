@@ -32,11 +32,7 @@ class SocialLoginController extends SocialController
         );
 
         try {
-            $adapter = HybridAuthManager::adapterFor($registered);
-
-            // On the first pass this redirects the browser to the provider and
-            // never returns — HybridAuth exits inside authenticate().
-            $adapter->authenticate();
+            $url = HybridAuthManager::begin(HybridAuthManager::adapterFor($registered));
         } catch (\Throwable $e) {
             Log::error("Social login initiation failed for '{$registered->slug}': " . $e->getMessage());
             FlowState::clear();
@@ -44,8 +40,8 @@ class SocialLoginController extends SocialController
             return $this->fail(__('aSocialAuth::login.error_generic'), $context);
         }
 
-        // Reached only when a valid token was already in the session, in which
-        // case the callback endpoint is where the profile gets processed.
-        return redirect()->away(Config::buildCallbackUrl($registered->slug));
+        // No URL means a valid token was already in the session, in which case
+        // the callback endpoint is where the profile gets processed.
+        return redirect()->away($url ?? Config::buildCallbackUrl($registered->slug));
     }
 }

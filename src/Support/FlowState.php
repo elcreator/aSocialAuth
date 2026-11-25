@@ -19,7 +19,7 @@ namespace Elcreator\aSocialAuth\Support;
  */
 class FlowState
 {
-    public const KEY = 'asocialauth.flow';
+    public const KEY = 'asocialauth_flow';
 
     public const INTENT_LOGIN = 'login';
     public const INTENT_LINK  = 'link';
@@ -104,13 +104,13 @@ class FlowState
     public static function flashError(string $message): void
     {
         static::ensureSession();
-        $_SESSION['asocialauth.error'] = $message;
+        $_SESSION['asocialauth_error'] = $message;
     }
 
     public static function flashSuccess(string $message): void
     {
         static::ensureSession();
-        $_SESSION['asocialauth.success'] = $message;
+        $_SESSION['asocialauth_success'] = $message;
     }
 
     /**
@@ -118,12 +118,12 @@ class FlowState
      */
     public static function takeError(): ?string
     {
-        return static::take('asocialauth.error');
+        return static::take('asocialauth_error');
     }
 
     public static function takeSuccess(): ?string
     {
-        return static::take('asocialauth.success');
+        return static::take('asocialauth_success');
     }
 
     protected static function take(string $key): ?string

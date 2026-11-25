@@ -11,13 +11,9 @@ use Illuminate\Http\Request;
 
 function runTokenMiddleware(Request $request): string
 {
-    try {
-        (new VerifyRequestToken())->handle($request, fn () => 'passed');
+    $result = (new VerifyRequestToken())->handle($request, fn () => 'passed');
 
-        return 'passed';
-    } catch (\Throwable $e) {
-        return 'rejected';
-    }
+    return $result === 'passed' ? 'passed' : 'rejected';
 }
 
 function postWithToken(?string $token): Request
@@ -136,4 +132,28 @@ describe('context detection, which a Referer can steer', function () {
 
         expect(Config::resolveContext('https://example.test/manager/'))->toBe('web');
     });
+});
+
+it('answers a bad token with 419 rather than reaching the action', function () {
+    $_SESSION['_token'] = 'real';
+
+    $response = (new \Elcreator\aSocialAuth\Http\Middleware\VerifyRequestToken())->handle(
+        Request::create('/', 'POST', ['_token' => 'forged']),
+        fn () => throw new LogicException('the action was reached')
+    );
+
+    expect($response->getStatusCode())->toBe(419);
+});
+
+it('gives the session cookie the flags the site configured', function () {
+    $options = \Elcreator\aSocialAuth\Support\SessionCookie::options([
+        'lifetime' => 120, 'path' => '/', 'domain' => null, 'same_site' => 'lax', 'http_only' => true,
+    ]);
+
+    expect($options)->toMatchArray(['path' => '/', 'domain' => '', 'secure' => true, 'httponly' => true, 'samesite' => 'lax'])
+        ->and($options['expires'])->toBeGreaterThan(time() + 7000);
+
+    // An explicit setting beats the scheme of the site URL.
+    expect(\Elcreator\aSocialAuth\Support\SessionCookie::options(['secure' => false])['secure'])->toBeFalse()
+        ->and(\Elcreator\aSocialAuth\Support\SessionCookie::options(['lifetime' => 120, 'expire_on_close' => true])['expires'])->toBe(0);
 });

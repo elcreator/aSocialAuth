@@ -60,6 +60,7 @@ class SocialAuth
             // one. That is deliberate: a second factor configured under '*'
             // would be worthless if the social door bypassed it.
             \UserManager::loginById($payload);
+            OneTap::forgetSignOut();
         } catch (ChallengeRequiredException $e) {
             throw $e;
         } catch (ServiceActionException $e) {

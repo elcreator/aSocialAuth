@@ -295,6 +295,18 @@ if (!function_exists('__')) {
     }
 }
 
+if (!function_exists('redirect')) {
+    function redirect()
+    {
+        return new class {
+            public function away(string $url): \Illuminate\Http\RedirectResponse
+            {
+                return new \Illuminate\Http\RedirectResponse($url);
+            }
+        };
+    }
+}
+
 if (!function_exists('now')) {
     function now()
     {

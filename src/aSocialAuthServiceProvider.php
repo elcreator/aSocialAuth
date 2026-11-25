@@ -2,6 +2,7 @@
 
 namespace Elcreator\aSocialAuth;
 
+use Elcreator\aSocialAuth\Console\PackagesCommand;
 use Elcreator\aSocialAuth\Support\Config;
 use Elcreator\aSocialAuth\Support\Log;
 use Elcreator\aSocialAuth\Support\Renderer;
@@ -27,6 +28,7 @@ class aSocialAuthServiceProvider extends ServiceProvider
         $this->loadRoutes();
 
         if ($this->app->runningInConsole()) {
+            $this->commands([PackagesCommand::class]);
             $this->publishResources();
         }
     }
@@ -125,6 +127,19 @@ class aSocialAuthServiceProvider extends ServiceProvider
             $params['providers'] = false;
 
             return $widget($params);
+        });
+
+        // Call it uncached: the prompt carries this session's nonce and token.
+        $this->addSnippet('aSocialAuthOneTap', function ($params = []) {
+            try {
+                return Renderer::oneTapWidget(
+                    Config::sanitizeReturnPath(is_array($params) ? ($params['return'] ?? null) : null)
+                );
+            } catch (\Throwable $e) {
+                Log::warning('aSocialAuthOneTap snippet failed: ' . $e->getMessage());
+
+                return '';
+            }
         });
 
         $this->addSnippet('aSocialAuthIdentities', function ($params = []) {

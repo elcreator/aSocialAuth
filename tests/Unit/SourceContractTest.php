@@ -87,7 +87,7 @@ it('exempts only the OAuth legs from CSRF', function () {
     // The callback cannot carry a token — it is a GET from a third party, and
     // HybridAuth's state parameter guards it. Everything that changes state from
     // a form we rendered must be POST and CSRF-checked.
-    foreach (['credentials_login', 'credentials_register', 'credentials_recover', 'credentials_reset', 'unlink'] as $action) {
+    foreach (['credentials_login', 'credentials_register', 'credentials_recover', 'credentials_reset', 'unlink', 'onetap'] as $action) {
         expect($routes)->toContain("Config::routePattern('{$action}')");
     }
 
@@ -118,6 +118,50 @@ it('exempts only the OAuth legs from CSRF', function () {
     $callbackLine = substr($callbackLine, 0, strpos($callbackLine, ';'));
 
     expect($callbackLine)->not->toContain('csrf');
+});
+
+it('uses no dot in a session key', function () {
+    // $_SESSION is synced into the Laravel store, whose put() reads a dot as
+    // nesting: the value comes back under another key, or in a worker not at all.
+    foreach ([
+        Elcreator\aSocialAuth\Support\FlowState::KEY,
+        Elcreator\aSocialAuth\Support\PendingLogin::KEY,
+        Elcreator\aSocialAuth\Support\OneTap::NONCE_KEY,
+        Elcreator\aSocialAuth\Support\OneTap::SUPPRESS_KEY,
+    ] as $key) {
+        expect($key)->not->toContain('.');
+    }
+
+    foreach (packageSources() as $path => $source) {
+        expect($source)->not->toMatch('/(?:_SESSION\[|take\()\'[^\']*\./', basename($path));
+    }
+});
+
+it('keeps no per-request state in statics', function () {
+    // They outlive the request in a worker. RequestState is the one place for it;
+    // the rest are seams a test sets.
+    $allowed = ['RequestState.php', 'IdTokenVerifier.php', 'Packages.php'];
+
+    foreach (packageSources() as $path => $source) {
+        if (!in_array(basename($path), $allowed, true)) {
+            expect($source)->not->toMatch('/(public|protected|private) static [^(;]*\$\w+/', 'static property in ' . basename($path));
+        }
+    }
+});
+
+it('never lets HybridAuth exit', function () {
+    foreach (packageSources('src/Http') as $path => $source) {
+        if (basename($path) !== 'SocialCallbackController.php') {
+            expect($source)->not->toContain('->authenticate()', basename($path));
+        }
+    }
+});
+
+it('does not call Laravel helpers Evolution CMS lacks', function () {
+    // There is no abort(): calling it turns every intended 404 and 419 into a 500.
+    foreach (packageSources() as $path => $source) {
+        expect($source)->not->toMatch('/(?<![\w>:])abort\s*\(/', 'abort() in ' . basename($path));
+    }
 });
 
 it('logs through the package logger rather than to the screen', function () {

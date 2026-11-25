@@ -251,6 +251,24 @@ enum SocialProvider: string
     }
 
     /**
+     * What One Tap needs, for the networks that have it: where the client script
+     * lives, and what an ID token must be signed with and issued by.
+     *
+     * @return array{script: string, issuers: string[], jwks: string}|null
+     */
+    public function oneTap(): ?array
+    {
+        return match ($this) {
+            self::GOOGLE => [
+                'script'  => 'https://accounts.google.com/gsi/client',
+                'issuers' => ['https://accounts.google.com', 'accounts.google.com'],
+                'jwks'    => 'https://www.googleapis.com/oauth2/v3/certs',
+            ],
+            default => null,
+        };
+    }
+
+    /**
      * Resolve a slug to a case, tolerating case and surrounding whitespace.
      */
     public static function fromSlug(?string $slug): ?self

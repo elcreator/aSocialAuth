@@ -3,8 +3,10 @@
 use Elcreator\aSocialAuth\Support\Config;
 use Elcreator\aSocialAuth\Support\FlowState;
 use Elcreator\aSocialAuth\Support\Log;
+use Elcreator\aSocialAuth\Support\OneTap;
 use Elcreator\aSocialAuth\Support\Promotion;
 use Elcreator\aSocialAuth\Support\Renderer;
+use Elcreator\aSocialAuth\Support\SessionCookie;
 use Elcreator\aSocialAuth\Support\UserResolver;
 
 /**
@@ -67,6 +69,35 @@ Event::listen('evolution.OnBeforeUserSave', function ($params = []) {
         // A warning must never be the reason a user save fails.
     }
 });
+
+/**
+ * Send a new guest the session cookie along with a form (see SessionCookie).
+ */
+Event::listen('evolution.OnWebPagePrerender', function () {
+    try {
+        SessionCookie::send();
+    } catch (\Throwable $e) {
+        Log::warning('Could not send the session cookie: ' . $e->getMessage());
+    }
+});
+
+/**
+ * Keep One Tap from signing a visitor straight back in after they signed out.
+ *
+ * The core fires OnManagerLogout for web logouts too; OnWebLogout is what
+ * extras such as login snippets fire.
+ */
+foreach (['OnManagerLogout', 'OnWebLogout'] as $logoutEvent) {
+    Event::listen('evolution.' . $logoutEvent, function () {
+        try {
+            if (Config::isEnabled() && OneTap::provider() !== null) {
+                OneTap::rememberSignOut();
+            }
+        } catch (\Throwable $e) {
+            Log::warning('Failed to note the sign-out for One Tap: ' . $e->getMessage());
+        }
+    });
+}
 
 if (!function_exists('aSocialAuth_enabled')) {
     /**

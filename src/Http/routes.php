@@ -1,6 +1,7 @@
 <?php
 
 use Elcreator\aSocialAuth\Http\Controllers\CredentialsController;
+use Elcreator\aSocialAuth\Http\Controllers\OneTapController;
 use Elcreator\aSocialAuth\Http\Controllers\SocialCallbackController;
 use Elcreator\aSocialAuth\Http\Controllers\SocialLinkController;
 use Elcreator\aSocialAuth\Http\Controllers\SocialLoginController;
@@ -105,6 +106,13 @@ Route::prefix(Config::getRoutePrefix())
             ->where('provider', $providerPattern)
             ->middleware(VerifyRequestToken::class)
             ->name(Config::routeName('unlink'));
+
+        // Redeem a One Tap ID token. Our own script posts it from our own page,
+        // so it carries our token and is checked like any other form.
+        Route::post(Config::routePattern('onetap'), OneTapController::class)
+            ->where('provider', $providerPattern)
+            ->middleware(VerifyRequestToken::class)
+            ->name(Config::routeName('onetap'));
 
         // Start a sign-in. Least specific, so it goes last.
         Route::get(Config::routePattern('login'), SocialLoginController::class)

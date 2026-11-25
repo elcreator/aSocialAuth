@@ -28,6 +28,8 @@ dataset('views', [
     'manager/login-buttons.blade.php',
     'widget/login.blade.php',
     'widget/identities.blade.php',
+    'widget/one-tap.blade.php',
+    'partials/one-tap.blade.php',
     'partials/styles.blade.php',
     'partials/icon.blade.php',
     'partials/buttons.blade.php',
